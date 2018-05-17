@@ -1,0 +1,23 @@
+sudo: false
+language: generic
+
+os:
+ - linux
+
+python:
+  - "3.6"
+
+global:
+  env:
+    - COMMIT_AUTHOR_EMAIL: "f.zapata@esciencecenter.nl"
+
+install:
+  # install library
+  - pip install .[test]
+
+script:
+  - (cd tests && converage run -m unittest discover -vvv)
+
+branches:
+  only:
+    - master
