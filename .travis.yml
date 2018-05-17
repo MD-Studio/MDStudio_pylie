@@ -13,8 +13,8 @@ global:
 
 install:
   # install library
-  - pip install numpy scipy
-  - pip install .[test]
+  - pip install numpy scipy --user 
+  - pip install -e .[test]
 
 script:
   - (cd tests && converage run -m unittest discover -vvv)
