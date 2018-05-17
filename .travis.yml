@@ -1,4 +1,4 @@
-sudo: false
+sudo: true
 language: python
 
 os:
@@ -13,8 +13,8 @@ global:
 
 install:
   # install library
-  - pip install numpy scipy --user 
-  - pip install -e .[test]
+  - pip install numpy scipy
+  - pip install .[test]
 
 script:
   - (cd tests && converage run -m unittest discover -vvv)
