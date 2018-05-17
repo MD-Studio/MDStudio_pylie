@@ -44,7 +44,7 @@ setup(
         'numpy', 'pandas', 'statsmodels', 'jsonschema', 'matplotlib',
         'scikit-learn', 'openpyxl'],
     extra_requirements={
-        'test': ['convert']
+        'test': ['coverage']
     },
     include_package_data=True,
     zip_safe=True,
