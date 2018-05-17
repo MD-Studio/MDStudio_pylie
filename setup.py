@@ -43,7 +43,7 @@ setup(
     install_requires=[
         'numpy', 'pandas', 'statsmodels', 'jsonschema', 'matplotlib',
         'scikit-learn', 'openpyxl'],
-    extra_requirements={
+    extras_require={
         'test': ['coverage']
     },
     include_package_data=True,
