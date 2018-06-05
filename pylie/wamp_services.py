@@ -79,13 +79,6 @@ class PylieWampApi(ComponentSession):
             self.log.error("File: {} does not exist!".format(filepath))
             return 'failed'
 
-    def create_workdir(self, workdir):
-        """ Create working directory if it does not exist"""
-        if not os.path.isdir(workdir):
-            os.mkdir(workdir)
-            self.log.debug(
-                'Create working directory: {0}'.format(workdir))
-
     @endpoint('liedeltag', 'liedeltag_request', 'liedeltag_response')
     def calculate_lie_deltag(self, request, claims):
         """
@@ -102,8 +95,7 @@ class PylieWampApi(ComponentSession):
         dg_calc = dfobject.liedeltag(params=alpha_beta_gamma, kBt=request['kBt'])
 
         # Create workdir to save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        workdir = os.path.abspath(request['workdir'])
 
         # Save dataframe
         file_format = request['fileformat']
@@ -141,8 +133,7 @@ class PylieWampApi(ComponentSession):
                 axis=request['axis'], join=request['join'])
 
             # Create workdir to save file
-            workdir = request['workdir']
-            self.create_workdir(workdir)
+            workdir = os.path.abspath(request['workdir'])
 
             file_format = request['file_format']
             filepath = os.path.join(workdir, 'joined.{0}'.format(file_format))
@@ -172,8 +163,8 @@ class PylieWampApi(ComponentSession):
             return
 
         # Create workdir to save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        workdir = os.path.abspath(request['workdir'])
+
         # Import CSV file and run spline fitting filter
         liemdframe = LIEMDFrame(read_csv(mdframe))
         if 'Unnamed: 0' in liemdframe.columns:
@@ -206,8 +197,8 @@ class PylieWampApi(ComponentSession):
         self.log.info("Filter detected {0} outliers.".format(len(filtered.outliers.cases)))
 
         # Create workdir to save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        workdir = os.path.abspath(request['workdir'])
+
         # Plot results
         if request['plot']:
             outp = os.path.join(workdir, 'gauss_filter.pdf')
@@ -240,8 +231,8 @@ class PylieWampApi(ComponentSession):
             return
 
         # Create workdir to save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        workdir = os.path.abspath(request['workdir'])
+
         # Import CSV file and run spline fitting filter
         liemdframe = LIEMDFrame(read_csv(mdframe))
         if 'Unnamed: 0' in liemdframe.columns:
@@ -291,9 +282,9 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/collect_energy_response.v1.json
         """
-        # Create workdir to save file
-        workdir = request["workdir"]
-        self.create_workdir(workdir)
+        # Use absolute path to save file
+        workdir = os.path.abspath(request["workdir"])
+
         # Collect trajectories
         mdframe = LIEMDFrame()
         vdw_header = request['lie_vdw_header']
@@ -353,9 +344,8 @@ class PylieWampApi(ComponentSession):
         ene = ad_residue_decomp(
             decomp_dfs, model['AD']['decVdw'], model['AD']['decEle'], cases=request['cases'])
 
-        # Create workdir and save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        # Use absolute path to save file
+        workdir = os.path.abspath(request['workdir'])
 
         filepath = os.path.join(workdir, 'adan_residue_decomp.csv')
         ene.to_csv(filepath)
@@ -388,9 +378,8 @@ class PylieWampApi(ComponentSession):
             dfobject, model['AD']['Dene']['CovMatrix'],
             center=request['center'], ci_cutoff=request['ci_cutoff'])
 
-        # Create workdir and save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        # Use absolute path to save file
+        workdir = os.path.abspath(request['workdir'])
 
         filepath = os.path.join(workdir, 'adan_dene.csv')
         ene.to_csv(filepath)
@@ -412,9 +401,8 @@ class PylieWampApi(ComponentSession):
         # Run AD test
         ene = ad_dene_yrange(dfobject, request['ymin'], request['ymax'])
 
-        # Create workdir and save file
-        workdir = request['workdir']
-        self.create_workdir(workdir)
+        # Use absolute path to save file
+        workdir = os.path.abspath(request['workdir'])
 
         filepath = os.path.join(workdir, 'adan_dene_yrange.csv')
         ene.to_csv(filepath)
