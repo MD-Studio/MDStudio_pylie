@@ -1,4 +1,4 @@
-FROM mdstudio/mdstudio_docker_conda:0.0.1
+FROM mdstudio/mdstudio_docker_conda:0.0.2
 
 COPY . /home/mdstudio/lie_pylie
 
