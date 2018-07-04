@@ -10,6 +10,4 @@ RUN conda install numpy scipy subprocess32
 
 RUN pip install .
 
-USER mdstudio
-
 CMD ["bash", "entry_point_lie_pylie.sh"]
