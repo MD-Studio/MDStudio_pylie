@@ -11,7 +11,7 @@ from pandas import DataFrame
 from .sybyl import AA_SYBYL_TYPES
 
 if sys.version_info[0] < 3:
-    import StringIO
+    from StringIO import StringIO
     import urlparse
     import urllib2 as urllib
 else:
@@ -53,7 +53,7 @@ def _open_anything(source):
             return open(source)
         except IOError:
             logger.debug("Unable to access as file, try to parse as string")
-            return StringIO.StringIO(str(source))
+            return StringIO(str(source))
 
 
 def read_gromacs_energy_file(file_or_buffer, columns=None, lowercase=True):
@@ -114,7 +114,9 @@ def read_gromacs_energy_file(file_or_buffer, columns=None, lowercase=True):
     if lowercase:
         df.columns = [col.lower() for col in extract_columns]
 
-    logger.debug("Imported Gromacs MD energy data from {0}, {1} datapoints".format(file_or_buffer.name, df.shape))
+    name = getattr(file_or_buffer, 'name', 'string')
+
+    logger.debug("Imported Gromacs MD energy data from {0}, {1} datapoints".format(name, df.shape))
     file_or_buffer.close()
     return df
 

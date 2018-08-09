@@ -6,17 +6,24 @@ file: wamp_services.py
 WAMP service methods the module exposes.
 """
 
+import base64
 import os
 import pickle
+import sys
 
 from pandas import (read_csv, read_json, read_excel, read_table, concat, DataFrame)
-
 from pylie import (LIEMDFrame, LIEDataFrame, pylie_config)
 from pylie.filters.filtersplines import FilterSplines
 from pylie.filters.filtergaussian import FilterGaussian
 from pylie.methods.adan import (ad_residue_decomp, ad_dene, ad_dene_yrange, parse_gromacs_decomp)
 from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession
+
+if sys.version_info[0] < 3:
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
 
 PANDAS_IMPORTERS = {'csv': read_csv, 'json': read_json, 'xlsx': read_excel, 'tbl': read_table}
 PANDAS_EXPORTERS = {'csv': 'to_csv', 'json': 'to_json', 'xlsx': 'to_excel', 'tbl': 'to_string'}
@@ -39,16 +46,7 @@ class PylieWampApi(ComponentSession):
 
         return ref_config
 
-    def _import_to_dataframe(self, infile):
-
-        if not os.path.isfile(infile):
-            self.log.error('No such file: {0}'.format(infile))
-            return
-
-        ext = infile.split('.')[-1]
-        if ext not in PANDAS_IMPORTERS:
-            self.log.error('Unsupported file format: {0}'.format(ext))
-            return
+    def _import_to_dataframe(self, infile, ext='csv'):
 
         df = PANDAS_IMPORTERS[ext](infile)
         if 'Unnamed: 0' in df:
@@ -91,7 +89,8 @@ class PylieWampApi(ComponentSession):
         alpha_beta_gamma = request['alpha_beta_gamma']
 
         # Filter DataFrame
-        dfobject = LIEDataFrame(self._import_to_dataframe(request['dataframe']))
+        file_string = StringIO(request['dataframe']['content'])
+        dfobject = LIEDataFrame(self._import_to_dataframe(file_string))
         dg_calc = dfobject.liedeltag(params=alpha_beta_gamma, kBt=request['kBt'])
 
         # Create workdir to save file
@@ -103,9 +102,9 @@ class PylieWampApi(ComponentSession):
         if self._export_dataframe(dg_calc, filepath, file_format=file_format):
             results = dg_calc.to_dict()
         else:
-            return
+            return None
 
-        return {'liedeltag_file': filepath, 'liedeltag': results}
+        return {'liedeltag_file': encoder(filepath), 'liedeltag': results}
 
     @endpoint('concat_dataframes', 'concat_dataframes_request', 'concat_dataframes_response')
     def concat_dataframes(self, request, claims):
@@ -122,7 +121,8 @@ class PylieWampApi(ComponentSession):
         # Import all files
         dfs = []
         for dataframe in request['dataframes']:
-            dfobject = self._import_to_dataframe(dataframe)
+            file_string = StringIO(dataframe['content'])
+            dfobject = self._import_to_dataframe(file_string)
             if isinstance(dfobject, DataFrame):
                 dfs.append(dfobject)
 
@@ -140,9 +140,9 @@ class PylieWampApi(ComponentSession):
             if self._export_dataframe(concat_df, filepath, file_format=file_format):
                 concat_mdframe = filepath
         else:
-            return
+            return None
 
-        return {'concat_mdframe': concat_mdframe}
+        return {'concat_mdframe': encoder(concat_mdframe)}
 
     @endpoint('calculate_lie_average', 'calculate_lie_average_request', 'calculate_lie_average_response')
     def calculate_lie_average(self, request, claims):
@@ -158,15 +158,12 @@ class PylieWampApi(ComponentSession):
         """
         mdframe = request['mdframe']
 
-        if not os.path.isfile(mdframe):
-            self.log.error('MDFrame csv file does not exist: {0}'.format(mdframe))
-            return
-
         # Create workdir to save file
         workdir = os.path.abspath(request['workdir'])
 
         # Import CSV file and run spline fitting filter
-        liemdframe = LIEMDFrame(read_csv(mdframe))
+        file_string = StringIO(mdframe['content'])
+        liemdframe = LIEMDFrame(read_csv(file_string))
         if 'Unnamed: 0' in liemdframe.columns:
             del liemdframe['Unnamed: 0']
 
@@ -174,7 +171,7 @@ class PylieWampApi(ComponentSession):
         filepath = os.path.join(workdir, 'averaged.csv')
         ave.to_csv(filepath)
 
-        return {'averaged': filepath}
+        return {'averaged': encoder(filepath)}
 
     @endpoint('gaussian_filter', 'gaussian_filter_request', 'gaussian_filter_response')
     def filter_gaussian(self, request, claims):
@@ -189,8 +186,9 @@ class PylieWampApi(ComponentSession):
           pydlie/schemas/endpoints/gaussian_filter_response.v1.json
         """
         # Filter DataFrame
+        file_string = StringIO(request['dataframe']['content'])
         dfobject = LIEDataFrame(
-            self._import_to_dataframe(request['dataframe']))
+            self._import_to_dataframe(file_string))
         gaussian = FilterGaussian(
             dfobject, confidence=request["confidence"])
         filtered = gaussian.filter()
@@ -209,9 +207,9 @@ class PylieWampApi(ComponentSession):
         file_format = request['file_format']
         filepath = os.path.join(workdir, 'gauss_filter.{0}'.format(file_format))
         if not self._export_dataframe(filtered, filepath, file_format=file_format):
-            return
+            return None
 
-        return {'gauss_filter': filepath}
+        return {'gauss_filter': encoder(filepath)}
 
     @endpoint('filter_stable_trajectory', 'filter_stable_request', 'filter_stable_response')
     def filter_stable_trajectory(self, request, claims):
@@ -226,15 +224,14 @@ class PylieWampApi(ComponentSession):
           pydlie/schemas/endpoints/filter_stable_response.v1.json
         """
         mdframe = request['mdframe']
-        if not os.path.isfile(mdframe):
-            self.log.error('MDFrame csv file does not exist: {0}'.format(mdframe))
-            return
 
         # Create workdir to save file
         workdir = os.path.abspath(request['workdir'])
 
         # Import CSV file and run spline fitting filter
-        liemdframe = LIEMDFrame(read_csv(mdframe))
+        file_string = StringIO(mdframe['content'])
+        liemdframe = LIEMDFrame(read_csv(file_string))
+
         if 'Unnamed: 0' in liemdframe.columns:
             del liemdframe['Unnamed: 0']
 
@@ -262,7 +259,7 @@ class PylieWampApi(ComponentSession):
             filepath = os.path.join(workdir, 'mdframe_splinefiltered.csv')
             filtered.to_csv(filepath)
 
-        output['filtered_mdframe'] = filepath
+        output['filtered_mdframe'] = encoder(filepath)
 
         return output
 
@@ -290,21 +287,16 @@ class PylieWampApi(ComponentSession):
         vdw_header = request['lie_vdw_header']
         ele_header = request['lie_ele_header']
         for pose, trj in enumerate(request['bound_trajectory']):
-            if not os.path.exists(trj):
-                self.log.error('File does not exists: {0}'.format(trj))
-                continue
             mdframe.from_file(
-                trj, {vdw_header: 'vdw_bound_{0}'.format(pose + 1),
-                      ele_header: 'coul_bound_{0}'.format(pose + 1)},
+                trj['content'], {
+                    vdw_header: 'vdw_bound_{0}'.format(pose + 1),
+                    ele_header: 'coul_bound_{0}'.format(pose + 1)},
                 filetype=request['filetype'])
             self.log.debug('Import file: {0}, pose: {1}'.format(trj, pose))
 
         for trj in request['unbound_trajectory']:
-            if not os.path.exists(trj):
-                self.log.error('File does not exists: {0}'.format(trj))
-                continue
             mdframe.from_file(
-                trj, {vdw_header: 'vdw_unbound', ele_header: 'coul_unbound'},
+                trj['content'], {vdw_header: 'vdw_unbound', ele_header: 'coul_unbound'},
                 filetype=request['filetype'])
             self.log.debug('Import unbound file: {0}'.format(trj))
 
@@ -315,7 +307,7 @@ class PylieWampApi(ComponentSession):
         filepath = os.path.join(workdir, 'mdframe.csv')
         mdframe.to_csv(filepath)
 
-        return {'mdframe': filepath}
+        return {'mdframe': encoder(filepath)}
 
     @endpoint('adan_residue_decomp', 'adan_residue_decomp_request', 'adan_residue_decomp_response')
     def adan_residue_decomp(self, request, claims):
@@ -326,14 +318,10 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/adan_residue_decomp_response.v1.json
         """
-
-        model_pkl = request['model_pkl']
+        binary = request['model_pkl']['content']
         # Load the model
-        if not os.path.isfile(model_pkl):
-            self.log.error('eTOX model file does not exist: {0}'.format(model_pkl))
-            return
-
-        model = pickle.load(open(model_pkl))
+        model_pkl = base64.b64decode(binary.encode())
+        model = pickle.load(StringIO(model_pkl))
 
         # Parse gromacs residue decomposition energy files to DataFrame
         decomp_dfs = []
@@ -361,14 +349,10 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/adan_dene_response.v1.json
         """
-        model_pkl = request['model_pkl']
-
+        binary = request['model_pkl']['content']
         # Load the model
-        if not os.path.isfile(model_pkl):
-            self.log.error('eTOX model file does not exist: {0}'.format(model_pkl))
-            return
-
-        model = pickle.load(open(model_pkl))
+        model_pkl = base64.b64decode(binary.encode())
+        model = pickle.load(StringIO(model_pkl))
 
         # Parse gromacs residue decomposition energy files to DataFrame
         dfobject = self._import_to_dataframe(request['dataframe'])
@@ -396,7 +380,8 @@ class PylieWampApi(ComponentSession):
           pydlie/schemas/endpoints/adan_dene_yrange_response.v1.json
         """
         # Parse gromacs residue decomposition energy files to DataFrame
-        dfobject = self._import_to_dataframe(request['dataframe'])
+        file_string = StringIO(request['dataframe']['content'])
+        dfobject = self._import_to_dataframe(file_string)
 
         # Run AD test
         ene = ad_dene_yrange(dfobject, request['ymin'], request['ymax'])
@@ -408,3 +393,22 @@ class PylieWampApi(ComponentSession):
         ene.to_csv(filepath)
 
         return {'decomp': ene.to_dict()}
+
+
+def encoder(file_path):
+    """
+    Encode the content of `file_path` into a simple dict.
+    """
+    extension = os.path.splitext(file_path)[1]
+    with open(file_path, 'r') as f:
+        content = f.read()
+
+    return {"path": file_path, "extension": extension,
+            "content": content, "encoding": "utf8"}
+
+
+def encode_file(val):
+    if not os.path.isfile(val):
+        return val
+    else:
+        return encoder(val)

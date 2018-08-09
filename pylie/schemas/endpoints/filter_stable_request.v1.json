@@ -6,7 +6,7 @@
     "type": "object",
     "properties": {
 	"mdframe": {
-	    "type": "string",
+	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
 	    "description": "Path to the dataframe"
 	},
 	"do_plot": {

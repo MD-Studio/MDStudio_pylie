@@ -2,13 +2,37 @@ from mdstudio.deferred.chainable import chainable
 from mdstudio.component.session import ComponentSession
 from mdstudio.runner import main
 from os.path import join
+
+import base64
 import numpy as np
 import os
 import pandas as pd
-import shutil
+import sys
+
+if sys.version_info[0] < 3:
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
 
 file_path = os.path.realpath(__file__)
 root = os.path.split(file_path)[0]
+
+
+def create_path_file_obj(path, encoding='utf8'):
+    """
+    Encode the input files
+    """
+    extension = os.path.splitext(path)[1]
+    mode = 'rb' if encoding == 'bytes' else 'r'
+    with open(path, mode) as f:
+        content = f.read()
+    if encoding == 'bytes':
+        content = base64.b64encode(content).decode('ascii')
+
+    return {
+        'path': path, 'encoding': encoding,
+        'content': content, 'extension': extension}
 
 
 def create_workdir(name, path="/tmp/mdstudio/lie_pylie"):
@@ -19,55 +43,59 @@ def create_workdir(name, path="/tmp/mdstudio/lie_pylie"):
     return workdir
 
 
-def copy_to_workdir(file_path, workdir):
-    # shutil.copy(file_path, workdir)
-    base = os.path.basename(file_path)
-    return join(workdir, base)
-
-
-def compare_csv_files(file1, file2):
+def compare_csv_files(str_1, str_2):
     """check if two csv files are the same"""
-    df1 = pd.read_csv(file1).sort_index(axis=1)
-    df2 = pd.read_csv(file2).sort_index(axis=1)
+    f1 = StringIO(str_1)
+    f2 = StringIO(str_2)
+    df1 = pd.read_csv(f1).sort_index(axis=1)
+    df2 = pd.read_csv(f2).sort_index(axis=1)
 
     return df1.equals(df2)
 
 
 def compare_dictionaries(d1, d2):
     """Compare two dictionaries with nested numerical results """
-    df1 = pd.DataFrame(d1)
-    df2 = pd.DataFrame(d2)
+    df1 = pd.DataFrame(d1).sort_index(axis=1)
+    df2 = pd.DataFrame(d2).sort_index(axis=1)
 
     return df1.equals(df2)
 
 
+path_unbound = join(root, "files/trajectory/unbound_trajectory.ene")
+path_bound = join(root, "files/trajectory/bound_trajectory.ene")
 dict_trajectory = {
-    "unbound_trajectory": [join(root, "files/trajectory/unbound_trajectory.ene")],
-    "bound_trajectory": [join(root, "files/trajectory/bound_trajectory.ene")],
+    "unbound_trajectory": [create_path_file_obj(path_unbound)],
+    "bound_trajectory": [create_path_file_obj(path_bound)],
     "lie_vdw_header": "Ligand-Ligenv-vdw",
     "lie_ele_header": "Ligand-Ligenv-ele",
     "workdir": create_workdir("trajectory")}
 
-dict_stable = {"mdframe": join(root, "files/stable/mdframe.csv"),
+path_mdframe = join(root, "files/stable/mdframe.csv")
+dict_stable = {"mdframe": create_path_file_obj(path_mdframe),
                "workdir": create_workdir("stable"),
                "FilterSplines": {"minlength": 45}}
 
-dict_average = {"mdframe": join(root, "files/average/mdframe_splinefiltered.csv"),
+path_splinefiltered = join(root, "files/average/mdframe_splinefiltered.csv")
+dict_average = {"mdframe": create_path_file_obj(path_splinefiltered),
                 "workdir": create_workdir("average")}
 
+path_averaged = join(root, "files/deltag/averaged.csv")
 dict_deltag = {
     "alpha_beta_gamma": [0.5937400744224419,  0.31489794216038647, 0.0],
     "workdir": create_workdir("deltag"),
-    "dataframe": join(root, "files/deltag/averaged.csv")}
+    "dataframe": create_path_file_obj(path_averaged)}
 
+path_decompose = join(root, "files/adan_residue_deco/decompose_dataframe.ene")
+path_params = join(root, "files/adan_residue_deco/params.pkl")
 dict_adan_residue = {
     "workdir": create_workdir("adan_residue_deco"),
-    "decompose_files": [join(root, "files/adan_residue_deco/decompose_dataframe.ene")],
-    "model_pkl": join(root, "files/adan_residue_deco/params.pkl")}
+    "decompose_files": [create_path_file_obj(path_decompose)],
+    "model_pkl": create_path_file_obj(path_params)}
 
+path_liedeltag = join(root, "files/adan_dene_yrange/liedeltag.csv")
 dict_adan_yrange = {
     "workdir": create_workdir("adan_dene_yrange"),
-    "dataframe": join(root, "files/adan_dene_yrange/liedeltag.csv"),
+    "dataframe": create_path_file_obj(path_liedeltag),
     "ymin": -42.59,
     "ymax": -10.79,
     "liedeltag": {
@@ -154,55 +182,41 @@ class Run_pylie(ComponentSession):
 
     @chainable
     def on_run(self):
-        dict_trajectory['unbound_trajectory'] = [
-            copy_to_workdir(x, dict_trajectory['workdir'])
-            for x in dict_trajectory['unbound_trajectory']]
-        dict_trajectory['bound_trajectory'] = [
-            copy_to_workdir(x, dict_trajectory['workdir'])
-            for x in dict_trajectory['bound_trajectory']]
         result_collect = yield self.call(
             "mdgroup.lie_pylie.endpoint.collect_energy_trajectories",
             dict_trajectory)
-        assert compare_csv_files(result_collect["mdframe"], dict_stable["mdframe"])
+        assert compare_csv_files(
+            result_collect["mdframe"]['content'], dict_stable["mdframe"]['content'])
         print("method collect_energy_trajectories succeeded")
 
-        dict_stable['mdframe'] = copy_to_workdir(
-            dict_stable['mdframe'], dict_stable['workdir'])
         result_stable = yield self.call(
             "mdgroup.lie_pylie.endpoint.filter_stable_trajectory",
             dict_stable)
         # assert compare_csv_files(
-        #     result_stable["filtered_mdframe"], dict_average["mdframe"])
+        #     result_stable["filtered_mdframe"]['content'], dict_average["mdframe"]['content'])
         print("method filter_stable_trajectory succeeded!")
 
-        dict_average['mdframe'] = copy_to_workdir(
-            dict_average['mdframe'], dict_average['workdir'])
         result_average = yield self.call(
             "mdgroup.lie_pylie.endpoint.calculate_lie_average", dict_average)
-        assert compare_csv_files(result_average["averaged"], dict_deltag["dataframe"])
+        assert compare_csv_files(
+            result_average["averaged"]['content'], dict_deltag["dataframe"]['content'])
         print("method calculate_lie_average succeeded!")
 
-        dict_deltag['dataframe'] = copy_to_workdir(
-            dict_deltag['dataframe'], dict_deltag['workdir'])
         result_liedeltag = yield self.call(
             "mdgroup.lie_pylie.endpoint.liedeltag", dict_deltag)
-        assert compare_csv_files(result_liedeltag["liedeltag_file"], dict_adan_yrange["dataframe"])
+        assert compare_csv_files(
+            result_liedeltag["liedeltag_file"]['content'], dict_adan_yrange["dataframe"]['content'])
         print("method liedeltag succeeded!")
 
-        dict_adan_yrange['dataframe'] = copy_to_workdir(
-            dict_adan_yrange['dataframe'], dict_adan_yrange['workdir'])
         result_adan_yrange = yield self.call(
             "mdgroup.lie_pylie.endpoint.adan_dene_yrange", dict_adan_yrange)
         assert compare_dictionaries(result_adan_yrange["decomp"], expected_adan_yrange_results)
         print("method adan_dene_yrange succeeded!")
 
-        dict_adan_dene["model_pkl"] = copy_to_workdir(
-            dict_adan_residue["model_pkl"], dict_adan_dene["workdir"])
-        dict_adan_dene["dataframe"] = dict_adan_yrange["dataframe"]
         result_adan_dene = yield self.call(
             "mdgroup.lie_pylie.endpoint.adan_dene", dict_adan_dene)
         print("result_adan_dene", result_adan_dene)
-        # assert compare_dictionaries(result_adan_dene["decomp"], expected_adan_results)
+        assert compare_dictionaries(result_adan_dene["decomp"], expected_adan_results)
         print("method adan_dene succeeded!")
 
 

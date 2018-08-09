@@ -6,11 +6,11 @@
     "type": "object",
     "properties": {
 	"dataframe":{
-	    "type": "string",
-	    "default": "energy decomposition dataframe"
+	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
+	    "description": "energy decomposition dataframe"
 	},
 	"model_pkl": {
-	    "type": "string",
+	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
 	    "description": "Pickle file containing the model"
 	},
 	"center": {

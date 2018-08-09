@@ -6,15 +6,11 @@
   "type": "object",
   "properties": {
     "concat_mdframe": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "path to the resulting dataframe"
+	"$ref": "resource://mdgroup/common_resources/path_file/v1",
+	"description": "path to the resulting dataframe"
     }
   },
   "required": [
     "concat_mdframe"
   ]
 }
-
