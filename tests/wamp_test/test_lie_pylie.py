@@ -65,33 +65,33 @@ dict_trajectory = {
     "bound_trajectory": [create_path_file_obj(path_bound)],
     "lie_vdw_header": "Ligand-Ligenv-vdw",
     "lie_ele_header": "Ligand-Ligenv-ele",
-    "workdir": create_workdir("trajectory")}
+    "workdir": "/tmp"}
 
 path_mdframe = join(root, "files/stable/mdframe.csv")
 dict_stable = {"mdframe": create_path_file_obj(path_mdframe),
-               "workdir": create_workdir("stable"),
+               "workdir": "/tmp",
                "FilterSplines": {"minlength": 45}}
 
 path_splinefiltered = join(root, "files/average/mdframe_splinefiltered.csv")
 dict_average = {"mdframe": create_path_file_obj(path_splinefiltered),
-                "workdir": create_workdir("average")}
+                "workdir": "/tmp"}
 
 path_averaged = join(root, "files/deltag/averaged.csv")
 dict_deltag = {
     "alpha_beta_gamma": [0.5937400744224419,  0.31489794216038647, 0.0],
-    "workdir": create_workdir("deltag"),
+    "workdir": "/tmp",
     "dataframe": create_path_file_obj(path_averaged)}
 
 path_decompose = join(root, "files/adan_residue_deco/decompose_dataframe.ene")
 path_params = join(root, "files/adan_residue_deco/params.pkl")
 dict_adan_residue = {
-    "workdir": create_workdir("adan_residue_deco"),
+    "workdir": "/tmp",
     "decompose_files": [create_path_file_obj(path_decompose)],
     "model_pkl": create_path_file_obj(path_params)}
 
 path_liedeltag = join(root, "files/adan_dene_yrange/liedeltag.csv")
 dict_adan_yrange = {
-    "workdir": create_workdir("adan_dene_yrange"),
+    "workdir": "/tmp",
     "dataframe": create_path_file_obj(path_liedeltag),
     "ymin": -42.59,
     "ymax": -10.79,
@@ -149,7 +149,7 @@ expected_adan_yrange_results = {
 
 dict_adan_dene = {
     "ci_cutoff": 13.690708685318436,
-    "workdir": create_workdir("dict_adan_dene"),
+    "workdir": "/tmp",
     "liedeltag": dict_adan_yrange["liedeltag"],
     "model_pkl": dict_adan_residue["model_pkl"],
     "dataframe": dict_adan_yrange["dataframe"],
