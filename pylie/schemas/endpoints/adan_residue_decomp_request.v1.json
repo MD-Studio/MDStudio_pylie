@@ -6,11 +6,11 @@
     "type": "object",
     "properties": {
 	"decompose_files":{
-	    "type": "array",
-	    "default": "Files path to the energy decomposition"
+	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
+	    "description": "Files path to the energy decomposition"
 	},
 	"model_pkl": {
-	    "type": "string",
+	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
 	    "description": "Pickle file containing the model"
 	},
 	"cases": {

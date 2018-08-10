@@ -6,12 +6,8 @@
   "type": "object",
   "properties": {
     "gauss_filter": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "Result Dataframe",
-      "default": ""
+	"$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "Result Dataframe"
     }
   },
   "required": [

@@ -4,6 +4,11 @@
     "title": "Filter stable output",
     "description": "Use FFT and spline-based filtering to detect and extract stable regions",
     "type": "object",
-    "properties": {}
+    "properties": {
+	"filtered_mdframe" : {
+	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
+	    "description": "FFT and splined-based filtered trajectory"
+	}
+    }
 }
 

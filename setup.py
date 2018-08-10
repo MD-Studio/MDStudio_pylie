@@ -26,7 +26,7 @@ distribution_name = 'pylie'
 
 setup(
     name=distribution_name,
-    version=0.1,
+    version=0.2,
     description='LIE modelling library of the MDStudio application',
     author="""
     Marc van Dijk - VU University - Amsterdam
@@ -41,7 +41,7 @@ setup(
     py_modules=[distribution_name],
     test_suite="tests",
     install_requires=[
-        'numpy', 'pandas', 'statsmodels', 'jsonschema', 'matplotlib',
+        'dill', 'numpy', 'pandas', 'statsmodels', 'jsonschema', 'matplotlib',
         'scikit-learn', 'openpyxl'],
     extras_require={
         'test': ['coverage']

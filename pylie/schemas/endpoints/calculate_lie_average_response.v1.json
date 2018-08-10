@@ -6,7 +6,7 @@
   "type": "object",
   "properties": {
     "averaged": {
-      "type": "string",
+	"$ref": "resource://mdgroup/common_resources/path_file/v1",	
       "description": "path to the resulting dataframe"
     }
   },

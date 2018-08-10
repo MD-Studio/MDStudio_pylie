@@ -5,17 +5,17 @@
   "description": "Deltatag",
   "type": "object",
   "properties": {
-    "liedeltag_file": {
-      "type": "string",
-      "description": "Path to the deltadag file"
-    },
-    "liedeltag": {
-      "type": "object",
-      "description": ""
-    }
+      "liedeltag_file": {
+	  "$ref": "resource://mdgroup/common_resources/path_file/v1",
+	  "description": "Path to the deltadag file"
+      },
+      "liedeltag": {
+	  "type": "object",
+	  "description": ""
+      }
   },
-  "required": [
-    "liedeltag_file",
-    "liedeltag"
-  ]
+    "required": [
+	"liedeltag_file",
+	"liedeltag"
+    ]
 }

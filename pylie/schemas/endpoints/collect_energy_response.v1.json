@@ -5,13 +5,10 @@
   "description": "Import GROMACS MD trajectory energy files into a LIEMDFrame",
   "type": "object",
   "properties": {
-    "mdframe": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "description": "path to the resulting dataframe"
-    }
+      "mdframe": {
+	  "$ref": "resource://mdgroup/common_resources/path_file/v1",
+	  "description": "path to the resulting dataframe"
+      }
   },
   "required": [
     "mdframe"
