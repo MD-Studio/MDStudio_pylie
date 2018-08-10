@@ -3,7 +3,6 @@ from mdstudio.component.session import ComponentSession
 from mdstudio.runner import main
 from os.path import join
 
-import json
 import numpy as np
 import os
 import pandas as pd
