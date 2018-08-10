@@ -3,7 +3,7 @@ from mdstudio.component.session import ComponentSession
 from mdstudio.runner import main
 from os.path import join
 
-import base64
+import json
 import numpy as np
 import os
 import pandas as pd
@@ -24,15 +24,12 @@ def create_path_file_obj(path, encoding='utf8'):
     Encode the input files
     """
     extension = os.path.splitext(path)[1]
-    mode = 'rb' if encoding == 'bytes' else 'r'
-    with open(path, mode) as f:
+    with open(path, 'r') as f:
         content = f.read()
-    if encoding == 'bytes':
-        content = base64.b64encode(content).decode('ascii')
 
     return {
         'path': path, 'encoding': encoding,
-        'content': content, 'extension': extension}
+        'content': str(content), 'extension': extension}
 
 
 def create_workdir(name, path="/tmp/mdstudio/lie_pylie"):
@@ -57,8 +54,9 @@ def compare_dictionaries(d1, d2):
     """Compare two dictionaries with nested numerical results """
     df1 = pd.DataFrame(d1).sort_index(axis=1)
     df2 = pd.DataFrame(d2).sort_index(axis=1)
+    r = df1 - df2
 
-    return df1.equals(df2)
+    return abs(r.sum(axis=1).iloc[0]) < 1e-8
 
 
 path_unbound = join(root, "files/trajectory/unbound_trajectory.ene")
@@ -215,7 +213,6 @@ class Run_pylie(ComponentSession):
 
         result_adan_dene = yield self.call(
             "mdgroup.lie_pylie.endpoint.adan_dene", dict_adan_dene)
-        print("result_adan_dene", result_adan_dene)
         assert compare_dictionaries(result_adan_dene["decomp"], expected_adan_results)
         print("method adan_dene succeeded!")
 

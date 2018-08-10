@@ -6,9 +6,8 @@ file: wamp_services.py
 WAMP service methods the module exposes.
 """
 
-import base64
+import dill
 import os
-import pickle
 import sys
 
 from pandas import (read_csv, read_json, read_excel, read_table, concat, DataFrame)
@@ -320,8 +319,7 @@ class PylieWampApi(ComponentSession):
         """
         binary = request['model_pkl']['content']
         # Load the model
-        model_pkl = base64.b64decode(binary.encode())
-        model = pickle.load(StringIO(model_pkl))
+        model = dill.loads(binary)
 
         # Parse gromacs residue decomposition energy files to DataFrame
         decomp_dfs = []
@@ -351,11 +349,11 @@ class PylieWampApi(ComponentSession):
         """
         binary = request['model_pkl']['content']
         # Load the model
-        model_pkl = base64.b64decode(binary.encode())
-        model = pickle.load(StringIO(model_pkl))
+        model = dill.loads(binary)
 
         # Parse gromacs residue decomposition energy files to DataFrame
-        dfobject = self._import_to_dataframe(request['dataframe'])
+        file_string = StringIO(request['dataframe']['content'])
+        dfobject = self._import_to_dataframe(file_string)
 
         # Run AD test
         ene = ad_dene(
