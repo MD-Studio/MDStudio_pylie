@@ -27,8 +27,8 @@ def create_path_file_obj(path, encoding='utf8'):
         content = f.read()
 
     return {
-        'path': path, 'encoding': encoding,
-        'content': str(content), 'extension': extension}
+        u'path': path, u'encoding': encoding,
+        u'content': str(content), u'extension': extension}
 
 
 def create_workdir(name, path="/tmp/mdstudio/lie_pylie"):
@@ -61,114 +61,114 @@ def compare_dictionaries(d1, d2):
 path_unbound = join(root, "files/trajectory/unbound_trajectory.ene")
 path_bound = join(root, "files/trajectory/bound_trajectory.ene")
 dict_trajectory = {
-    "unbound_trajectory": [create_path_file_obj(path_unbound)],
-    "bound_trajectory": [create_path_file_obj(path_bound)],
-    "lie_vdw_header": "Ligand-Ligenv-vdw",
-    "lie_ele_header": "Ligand-Ligenv-ele",
-    "workdir": "/tmp"}
+    u"unbound_trajectory": [create_path_file_obj(path_unbound)],
+    u"bound_trajectory": [create_path_file_obj(path_bound)],
+    u"lie_vdw_header": u"Ligand-Ligenv-vdw",
+    u"lie_ele_header": u"Ligand-Ligenv-ele",
+    u"workdir": u"/tmp"}
 
 path_mdframe = join(root, "files/stable/mdframe.csv")
-dict_stable = {"mdframe": create_path_file_obj(path_mdframe),
-               "workdir": "/tmp",
-               "FilterSplines": {"minlength": 45}}
+dict_stable = {u"mdframe": create_path_file_obj(path_mdframe),
+               u"workdir": u"/tmp",
+               u"FilterSplines": {u"minlength": 45}}
 
 path_splinefiltered = join(root, "files/average/mdframe_splinefiltered.csv")
-dict_average = {"mdframe": create_path_file_obj(path_splinefiltered),
-                "workdir": "/tmp"}
+dict_average = {u"mdframe": create_path_file_obj(path_splinefiltered),
+                u"workdir": u"/tmp"}
 
 path_averaged = join(root, "files/deltag/averaged.csv")
 dict_deltag = {
-    "alpha_beta_gamma": [0.5937400744224419,  0.31489794216038647, 0.0],
-    "workdir": "/tmp",
-    "dataframe": create_path_file_obj(path_averaged)}
+    u"alpha_beta_gamma": [0.5937400744224419,  0.31489794216038647, 0.0],
+    u"workdir": u"/tmp",
+    u"dataframe": create_path_file_obj(path_averaged)}
 
 path_decompose = join(root, "files/adan_residue_deco/decompose_dataframe.ene")
 path_params = join(root, "files/adan_residue_deco/params.pkl")
 dict_adan_residue = {
-    "workdir": "/tmp",
-    "decompose_files": [create_path_file_obj(path_decompose)],
-    "model_pkl": create_path_file_obj(path_params)}
+    u"workdir": u"/tmp",
+    u"decompose_files": [create_path_file_obj(path_decompose)],
+    u"model_pkl": create_path_file_obj(path_params)}
 
 path_liedeltag = join(root, "files/adan_dene_yrange/liedeltag.csv")
 dict_adan_yrange = {
-    "workdir": "/tmp",
-    "dataframe": create_path_file_obj(path_liedeltag),
-    "ymin": -42.59,
-    "ymax": -10.79,
-    "liedeltag": {
-          "case": {
-            "0": 1.0
+    u"workdir": u"/tmp",
+    u"dataframe": create_path_file_obj(path_liedeltag),
+    u"ymin": -42.59,
+    u"ymax": -10.79,
+    u"liedeltag": {
+          u"case": {
+            u"0": 1.0
           },
-          "prob-1": {
-            "0": 1.0
+          u"prob-1": {
+            u"0": 1.0
           },
-          "w_d1": {
-            "0": 1.0
+          u"w_d1": {
+            u"0": 1.0
           },
-          "w_coul": {
-            "0": 8.451392745098037
+          u"w_coul": {
+            u"0": 8.451392745098037
           },
-          "ref_affinity": {
-            "0": np.NaN
+          u"ref_affinity": {
+            u"0": np.NaN
           },
-          "dg_calc": {
-            "0": -24.76012625865582
+          u"dg_calc": {
+            u"0": -24.76012625865582
           },
-          "beta": {
-            "0": 0.31489794216038647
+          u"beta": {
+            u"0": 0.31489794216038647
           },
-          "w_vdw": {
-            "0": -46.18427090196078
+          u"w_vdw": {
+            u"0": -46.18427090196078
           },
-          "error": {
-            "0": np.NaN
+          u"error": {
+            u"0": np.NaN
           },
-          "alpha": {
-            "0": 0.5937400744224419
+          u"alpha": {
+            u"0": 0.5937400744224419
           },
-          "gamma": {
-            "0": 0.0
+          u"gamma": {
+            u"0": 0.0
           }
         }
 }
 
 expected_adan_yrange_results = {
-    "case": {"0": 1.0},
-    "CI": {"0": 1},
-    "prob-1": {"0": 1.0},
-    "w_d1": {"0": 1.0},
-    "w_coul": {"0": 8.451392745098037},
-    "ref_affinity": {"0": np.NaN},
-    "dg_calc": {"0": -24.76012625865582},
-    "beta": {"0": 0.3148979421603865},
-    "w_vdw": {"0": -46.18427090196078},
-    "error": {"0": np.NaN},
-    "alpha": {"0": 0.5937400744224419},
-    "gamma": {"0": 0.0}
+    u"case": {u"0": 1.0},
+    u"CI": {u"0": 1},
+    u"prob-1": {u"0": 1.0},
+    u"w_d1": {u"0": 1.0},
+    u"w_coul": {u"0": 8.451392745098037},
+    u"ref_affinity": {u"0": np.NaN},
+    u"dg_calc": {u"0": -24.76012625865582},
+    u"beta": {u"0": 0.3148979421603865},
+    u"w_vdw": {u"0": -46.18427090196078},
+    u"error": {u"0": np.NaN},
+    u"alpha": {u"0": 0.5937400744224419},
+    u"gamma": {u"0": 0.0}
 }
 
 dict_adan_dene = {
-    "ci_cutoff": 13.690708685318436,
-    "workdir": "/tmp",
-    "liedeltag": dict_adan_yrange["liedeltag"],
-    "model_pkl": dict_adan_residue["model_pkl"],
-    "dataframe": dict_adan_yrange["dataframe"],
-    "center": [-53.11058012546337, 21.656883661248937]}
+    u"ci_cutoff": 13.690708685318436,
+    u"workdir": u"/tmp",
+    u"liedeltag": dict_adan_yrange["liedeltag"],
+    u"model_pkl": dict_adan_residue["model_pkl"],
+    u"dataframe": dict_adan_yrange["dataframe"],
+    u"center": [-53.11058012546337, 21.656883661248937]}
 
 expected_adan_results = {
-    "case": {"0": 1.0},
-    "CI": {"0": 0},
-    "mahal": {"0": 0.5355241558090091},
-    "prob-1": {"0": 1.0},
-    "w_d1": {"0": 1.0},
-    "w_coul": {"0": -13.2054909161509},
-    "ref_affinity": {"0": np.NaN},
-    "dg_calc": {"0": -24.76012625865582},
-    "beta": {"0": 0.3148979421603865},
-    "w_vdw": {"0": 6.926309223502592},
-    "error": {"0": np.NaN},
-    "alpha": {"0": 0.5937400744224419},
-    "gamma": {"0": 0.0}
+    u"case": {u"0": 1.0},
+    u"CI": {u"0": 0},
+    u"mahal": {u"0": 0.5355241558090091},
+    u"prob-1": {u"0": 1.0},
+    u"w_d1": {u"0": 1.0},
+    u"w_coul": {u"0": -13.2054909161509},
+    u"ref_affinity": {u"0": np.NaN},
+    u"dg_calc": {u"0": -24.76012625865582},
+    u"beta": {u"0": 0.3148979421603865},
+    u"w_vdw": {u"0": 6.926309223502592},
+    u"error": {u"0": np.NaN},
+    u"alpha": {u"0": 0.5937400744224419},
+    u"gamma": {u"0": 0.0}
 }
 
 
