@@ -294,11 +294,10 @@ class PylieWampApi(ComponentSession):
                 filetype=request['filetype'])
             self.log.debug('Import file: {0}, pose: {1}'.format(trj, pose))
 
-        for trj in request['unbound_trajectory']:
-            mdframe.from_file(
-                trj['content'], {vdw_header: 'vdw_unbound', ele_header: 'coul_unbound'},
-                filetype=request['filetype'])
-            self.log.debug('Import unbound file: {0}'.format(trj))
+        mdframe.from_file(
+            request['unbound_trajectory']['content'], {vdw_header: 'vdw_unbound', ele_header: 'coul_unbound'},
+            filetype=request['filetype'])
+        self.log.debug('Import unbound file: {0}'.format(request['unbound_trajectory']['path']))
 
         # Set the case ID
         mdframe.case = request['case']
