@@ -210,7 +210,7 @@ class PylieWampApi(ComponentSession):
 
         return {'gauss_filter': encoder(filepath)}
 
-    @endpoint('filter_stable_trajectory', 'filter_stable_request', 'filter_stable_response')
+    @endpoint('filter_stable_trajectory', 'filter_stable_trajectory_request', 'filter_stable_trajectory_response')
     def filter_stable_trajectory(self, request, claims):
         """
         Use FFT and spline-based filtering to detect and extract stable regions
@@ -262,7 +262,8 @@ class PylieWampApi(ComponentSession):
 
         return output
 
-    @endpoint('collect_energy_trajectories', 'collect_energy_request', 'collect_energy_response')
+    @endpoint('collect_energy_trajectories', 'collect_energy_trajectories_request',
+              'collect_energy_trajectories_response')
     def import_mdene_files(self, request, claims):
         """
         Import GROMACS MD trajectory energy files into a LIEMDFrame.
