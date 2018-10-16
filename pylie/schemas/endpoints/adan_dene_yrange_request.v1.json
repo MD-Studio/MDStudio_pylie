@@ -1,26 +1,30 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "http://mdstudio/schemas/adan_dene_yrange_request.json",
-    "title": "Adan dene yrange input",
-    "description": "eTOX ALLIES deltaG range applicability domain test",
-     "type": "object",
-    "properties": {
-	"dataframe":{
-	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
-	    "description": "energy decomposition dataframe"
-	},
-	"ymin": {
-	    "type": "number",
-	    "description": "lower value for deltaG range"
-	},
-	"ymin": {
-	    "type": "number",
-	    "description": "upper value for deltaG range"
-	},	
-	"workdir": {
-	    "type": "string",
-	    "default": "."
-	}
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/adan_dene_yrange_request.json",
+  "title": "Adan dene yrange input",
+  "description": "eTOX ALLIES deltaG range applicability domain test",
+  "type": "object",
+  "properties": {
+    "dataframe": {
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "energy decomposition dataframe"
     },
-    "required": ["dataframe", "ymin", "ymax"]
+    "ymin": {
+      "type": "number",
+      "description": "lower value for deltaG range"
+    },
+    "ymax": {
+      "type": "number",
+      "description": "upper value for deltaG range"
+    },
+    "workdir": {
+      "type": "string",
+      "default": "."
+    }
+  },
+  "required": [
+    "dataframe",
+    "ymin",
+    "ymax"
+  ]
 }
