@@ -274,11 +274,12 @@ class PylieWampApi(ComponentSession):
         multiple binding poses.
 
         For a detailed input description see:
-          pylie/schemas/endpoints/collect_energy_request.v1.json
+          pylie/schemas/endpoints/collect_energy_trajectories_request.v1.json
 
         For a detailed output description see:
-          pydlie/schemas/endpoints/collect_energy_response.v1.json
+          pylie/schemas/endpoints/collect_energy_trajectories_response.v1.json
         """
+
         # Use absolute path to save file
         workdir = os.path.abspath(request["workdir"])
 
