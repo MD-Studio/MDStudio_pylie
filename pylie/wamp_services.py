@@ -251,10 +251,15 @@ class PylieWampApi(ComponentSession):
 
         # Create plots
         if request['do_plot']:
-            currpath = os.getcwd()
-            os.chdir(workdir)
-            splines.plot(tofile=True, filetype=request['plotFileType'])
-            os.chdir(currpath)
+            if os.path.exists(workdir):
+                currpath = os.getcwd()
+                os.chdir(workdir)
+                paths = splines.plot(tofile=True, filetype=request['plotFileType'])
+                for image_paths in paths:
+                    output[image_paths] = encoder(os.path.join(workdir, image_paths))
+                os.chdir(currpath)
+            else:
+                self.log.error('Working directory does not exist: {0}'.format(workdir))
 
         # Filter the mdframe
         if request['do_filter']:
@@ -262,7 +267,6 @@ class PylieWampApi(ComponentSession):
             filtered.to_csv(filepath)
 
         output['filtered_mdframe'] = encoder(filepath)
-
         return output
 
     @endpoint('collect_energy_trajectories', 'collect_energy_trajectories_request',

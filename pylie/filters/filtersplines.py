@@ -208,13 +208,14 @@ class FilterSplines(object):
         Coulomb and Van der Waals pairs in the DataFrame.
 
         :param tofile:   save the plot as file with `filetype` in the current
-                         directory. File names are of the formt
+                         directory. File names are of the format
                          <case>-<pose>.<filetype>
         :type tofile:    :py:bool
         :param filetype: Matplotlib supported image file types
         :type filetype:  :py:str
 
-        :return:         Matplotlib axis objects representing the plots
+        :return:         Matplotlib axis objects representing the plots or list of
+                         file paths if `tofile`
         :rtype:          :py:list
         """
 
@@ -248,8 +249,11 @@ class FilterSplines(object):
                 ax.set_ylim(yaxis[0], yaxis[1] + 50)
 
             if tofile:
-                pyplot.savefig('{0}-{1}.{2}'.format(self.liemdframe.cases[0], pose.strip('_'), filetype.strip('.')))
+                filepath = '{0}-{1}.{2}'.format(self.liemdframe.cases[0], pose.strip('_'), filetype.strip('.'))
+                pyplot.savefig(filepath)
                 pyplot.close()
-            plots.append(ax)
+                plots.append(filepath)
+            else:
+                plots.append(ax)
 
         return plots
