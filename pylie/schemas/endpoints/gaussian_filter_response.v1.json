@@ -6,7 +6,7 @@
   "type": "object",
   "properties": {
     "gauss_filter": {
-	"$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
       "description": "Result Dataframe"
     }
   },

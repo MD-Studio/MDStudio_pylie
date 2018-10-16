@@ -6,8 +6,8 @@
   "type": "object",
   "properties": {
     "concat_mdframe": {
-	"$ref": "resource://mdgroup/common_resources/path_file/v1",
-	"description": "path to the resulting dataframe"
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "path to the resulting dataframe"
     }
   },
   "required": [

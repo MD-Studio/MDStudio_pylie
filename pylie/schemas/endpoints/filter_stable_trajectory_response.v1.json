@@ -1,14 +1,14 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "http://mdstudio/schemas/filter_stable_response.json",
-    "title": "Filter stable output",
-    "description": "Use FFT and spline-based filtering to detect and extract stable regions",
-    "type": "object",
-    "properties": {
-	"filtered_mdframe" : {
-	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
-	    "description": "FFT and splined-based filtered trajectory"
-	}
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/filter_stable_response.json",
+  "title": "Filter stable output",
+  "description": "Use FFT and spline-based filtering to detect and extract stable regions",
+  "type": "object",
+  "properties": {
+    "filtered_mdframe": {
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "FFT and splined-based filtered trajectory"
     }
+  }
 }
 
