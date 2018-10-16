@@ -1,26 +1,32 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "http://mdstudio/schemas/adan_residue_decomp_request.json",
-    "title": "Adan input",
-    "description": "Adan residues decomposition",
-    "type": "object",
-    "properties": {
-	"decompose_files":{
-	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
-	    "description": "Files path to the energy decomposition"
-	},
-	"model_pkl": {
-	    "$ref": "resource://mdgroup/common_resources/path_file/v1",
-	    "description": "Pickle file containing the model"
-	},
-	"cases": {
-	    "type": "array",
-	    "default": []
-	},
-	"workdir": {
-	    "type": "string",
-	    "default": "."
-	}
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://mdstudio/schemas/adan_residue_decomp_request.json",
+  "title": "Adan input",
+  "description": "Adan residues decomposition",
+  "type": "object",
+  "properties": {
+    "decompose_files": {
+      "type": "array",
+      "description": "One or more gromacs energy decomposition files",
+      "items": {
+        "$ref": "resource://mdgroup/common_resources/path_file/v1"
+      }
     },
-    "required": ["decompose_files", "model_pkl"]
+    "model_pkl": {
+      "$ref": "resource://mdgroup/common_resources/path_file/v1",
+      "description": "Pickle file containing the model"
+    },
+    "cases": {
+      "type": "array",
+      "default": []
+    },
+    "workdir": {
+      "type": "string",
+      "default": "."
+    }
+  },
+  "required": [
+    "decompose_files",
+    "model_pkl"
+  ]
 }
