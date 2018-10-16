@@ -13,7 +13,7 @@ import matplotlib
 
 # Init maplotlib
 from matplotlib import style
-matplotlib.use('TKAgg')  # Use Agg for non-interactive plotting
+matplotlib.use('Agg')  # Use Agg for non-interactive plotting
 style.use('ggplot')  # Because of AttributeError: Unknown property color_cycle bug in Pandas 1.7.1 with Matplotlib 1.5.0
 
 from .config import MetaConfigHandler
