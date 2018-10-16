@@ -85,6 +85,7 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pylie/schemas/endpoints/liedeltag_response.json
         """
+
         alpha_beta_gamma = request['alpha_beta_gamma']
 
         # Filter DataFrame
@@ -117,6 +118,7 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pylie/schemas/endpoints/concat_dataframes_response.json
         """
+
         # Import all files
         dfs = []
         for dataframe in request['dataframes']:
@@ -155,6 +157,7 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/calculate_lie_average_response.v1.json
         """
+
         mdframe = request['mdframe']
 
         # Create workdir to save file
@@ -184,12 +187,11 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/gaussian_filter_response.v1.json
         """
+
         # Filter DataFrame
         file_string = StringIO(request['dataframe']['content'])
-        dfobject = LIEDataFrame(
-            self._import_to_dataframe(file_string))
-        gaussian = FilterGaussian(
-            dfobject, confidence=request["confidence"])
+        dfobject = LIEDataFrame(self._import_to_dataframe(file_string))
+        gaussian = FilterGaussian(dfobject, confidence=request["confidence"])
         filtered = gaussian.filter()
         self.log.info("Filter detected {0} outliers.".format(len(filtered.outliers.cases)))
 
@@ -222,6 +224,7 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/filter_stable_response.v1.json
         """
+
         mdframe = request['mdframe']
 
         # Create workdir to save file
@@ -318,13 +321,15 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/adan_residue_decomp_response.v1.json
         """
-        binary = request['model_pkl']['content']
+
         # Load the model
+        binary = request['model_pkl']['content']
         model = dill.loads(binary)
 
         # Parse gromacs residue decomposition energy files to DataFrame
         decomp_dfs = []
-        for dcfile in request['decompose_files']:
+        for dcfileobj in request['decompose_files']:
+            dcfile = StringIO(dcfileobj['content'])
             decomp_dfs.append(parse_gromacs_decomp(dcfile))
 
         # Run AD test
@@ -348,8 +353,9 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/adan_dene_response.v1.json
         """
-        binary = request['model_pkl']['content']
+
         # Load the model
+        binary = request['model_pkl']['content']
         model = dill.loads(binary)
 
         # Parse gromacs residue decomposition energy files to DataFrame
@@ -378,6 +384,7 @@ class PylieWampApi(ComponentSession):
         For a detailed output description see:
           pydlie/schemas/endpoints/adan_dene_yrange_response.v1.json
         """
+
         # Parse gromacs residue decomposition energy files to DataFrame
         file_string = StringIO(request['dataframe']['content'])
         dfobject = self._import_to_dataframe(file_string)

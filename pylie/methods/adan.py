@@ -26,17 +26,17 @@ def parse_gromacs_decomp(ene_file, parse_rest=True):
     and calculate trajectory average energy values
 
     :param ene_file:   Gromacs per-residue energy decomposition file
-    :type ene_file:    :py:str
+    :type ene_file:    :py:file-like object
     :param parse_rest: parse the residual column (*-rest-*)
     :type parse_rest:  :py:bool
 
     :return:           pandas DataFrame
     :rtype:            :pandas:DataFrame
     """
+
     # Import file
-    with open(ene_file, 'r') as f:
-        line = f.readline()
-        df = pandas.read_csv(f, delim_whitespace=True, header=None)
+    line = ene_file.readline()
+    df = pandas.read_csv(ene_file, delim_whitespace=True, header=None)
 
     # remove the # symbol from the columns
     df.columns = line.split()[1:]
