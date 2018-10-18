@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import logging
 import numpy
 
@@ -220,8 +221,9 @@ class FilterSplines(object):
         """
 
         columns = [n for n in self.liemdframe.columns if n.startswith('coul_bound')]
-        plots = []
+        currpath = os.getcwd()
 
+        plots = []
         for column in columns:
 
             # Plot the energy trajectory
@@ -249,7 +251,9 @@ class FilterSplines(object):
                 ax.set_ylim(yaxis[0], yaxis[1] + 50)
 
             if tofile:
-                filepath = 'filter-{0}-{1}.{2}'.format(self.liemdframe.cases[0], pose.strip('_'), filetype.strip('.'))
+                filepath = os.path.join(currpath, 'filter-{0}-{1}.{2}'.format(self.liemdframe.cases[0],
+                                                                              pose.strip('_'),
+                                                                              filetype.lstrip('.')))
                 pyplot.savefig(filepath)
                 pyplot.close()
                 plots.append(filepath)

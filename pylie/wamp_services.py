@@ -255,8 +255,9 @@ class PylieWampApi(ComponentSession):
                 currpath = os.getcwd()
                 os.chdir(workdir)
                 paths = splines.plot(tofile=True, filetype=request['plotFileType'])
-                for image_paths in paths:
-                    output[image_paths] = encoder(os.path.join(workdir, image_paths), inline_content=False)
+                for i, image_paths in enumerate(paths, start=1):
+                    fid = '{0}-{1}'.format(os.path.basename(image_paths), i)
+                    output[fid] = encoder(image_paths, inline_content=False)
                 os.chdir(currpath)
             else:
                 self.log.error('Working directory does not exist: {0}'.format(workdir))
