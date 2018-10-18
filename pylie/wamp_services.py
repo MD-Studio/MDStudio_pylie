@@ -405,13 +405,30 @@ class PylieWampApi(ComponentSession):
         return {'decomp': ene.to_dict()}
 
 
-def encoder(file_path):
+def encoder(file_path, inline_content=True):
     """
     Encode the content of `file_path` into a simple dict.
+
+    Set `inline_content` to False to prevent serialization of file content
+    as part of WAMP return value. This is done for images for instance.
+    The file path needs to be available on the receiver side.
+    
+    :param file_path:       path to local file
+    :type file_path:        :py:str
+    :param inline_content:  include content of file inline (serialize in
+                            WAMP message)
+    :type inline_content:   :py:bool
+
+    :return:                WAMP message file object
+    :rtype:                 :py:dict
     """
+
     extension = os.path.splitext(file_path)[1]
-    with open(file_path, 'r') as f:
-        content = f.read()
+
+    content = None
+    if inline_content:
+        with open(file_path, 'r') as f:
+            content = f.read()
 
     return {"path": file_path, "extension": extension,
             "content": content, "encoding": "utf8"}
