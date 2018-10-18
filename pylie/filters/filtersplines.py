@@ -249,7 +249,7 @@ class FilterSplines(object):
                 ax.set_ylim(yaxis[0], yaxis[1] + 50)
 
             if tofile:
-                filepath = '{0}-{1}.{2}'.format(self.liemdframe.cases[0], pose.strip('_'), filetype.strip('.'))
+                filepath = 'filter-{0}-{1}.{2}'.format(self.liemdframe.cases[0], pose.strip('_'), filetype.strip('.'))
                 pyplot.savefig(filepath)
                 pyplot.close()
                 plots.append(filepath)
