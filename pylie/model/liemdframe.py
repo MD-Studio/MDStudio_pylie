@@ -229,7 +229,7 @@ class LIEMDFrame(LIEDataFrameBase):
         for fc in filter_cols:
             stripped = fc.strip('_{0}'.format(pose))
             sel = self.loc[self[fc] == 0, 'frame'].values
-            if sel is not None:
+            if len(sel):
                 data[stripped.strip('filter_')] = (
                     len(sel), self.loc[min(sel), 'frame'].astype(int),
                     self.loc[max(sel), 'frame'].astype(int))
