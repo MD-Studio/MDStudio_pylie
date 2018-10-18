@@ -16,6 +16,7 @@
     "bound_trajectory": {
       "type": "array",
       "description": "One or more protein ligand simulations",
+      "format": "file_array",
       "items": {
         "$ref": "resource://mdgroup/common_resources/path_file/v1"
       }
