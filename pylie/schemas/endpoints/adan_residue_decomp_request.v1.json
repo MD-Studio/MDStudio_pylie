@@ -8,6 +8,7 @@
     "decompose_files": {
       "type": "array",
       "description": "One or more gromacs energy decomposition files",
+      "format": "file_array",
       "items": {
         "$ref": "resource://mdgroup/common_resources/path_file/v1"
       }
