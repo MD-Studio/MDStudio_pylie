@@ -38,6 +38,22 @@ class PylieWampApi(ComponentSession):
     def authorize_request(self, uri, claims):
         return True
 
+    @staticmethod
+    def get_file_content(path_file):
+        """
+        Get path_file content, inline or from file
+        """
+
+        file_content = path_file['content']
+        if file_content is None and path_file['path']:
+            if os.path.isfile(path_file['path']):
+                with open(path_file['path'], 'r') as fc:
+                    file_content = fc.read()
+            else:
+                raise IOError('Structure file not defined')
+
+        return file_content
+
     def _get_config(self, config, name):
 
         ref_config = pylie_config.get(name).dict()
@@ -86,18 +102,18 @@ class PylieWampApi(ComponentSession):
           pylie/schemas/endpoints/liedeltag_response.json
         """
 
-        alpha_beta_gamma = request['alpha_beta_gamma']
+        alpha_beta_gamma = request[u'alpha_beta_gamma']
 
         # Filter DataFrame
-        file_string = StringIO(request['dataframe']['content'])
+        file_string = StringIO(self.get_file_content(request[u'dataframe']))
         dfobject = LIEDataFrame(self._import_to_dataframe(file_string))
-        dg_calc = dfobject.liedeltag(params=alpha_beta_gamma, kBt=request['kBt'])
+        dg_calc = dfobject.liedeltag(params=alpha_beta_gamma, kBt=request[u'kBt'])
 
         # Create workdir to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         # Save dataframe
-        file_format = request['fileformat']
+        file_format = request[u'fileformat']
         filepath = os.path.join(workdir, 'liedeltag.{0}'.format(file_format))
         if self._export_dataframe(dg_calc, filepath, file_format=file_format):
             results = dg_calc.to_dict()
@@ -121,8 +137,8 @@ class PylieWampApi(ComponentSession):
 
         # Import all files
         dfs = []
-        for dataframe in request['dataframes']:
-            file_string = StringIO(dataframe['content'])
+        for dataframe in request[u'dataframes']:
+            file_string = StringIO(self.get_file_content(dataframe))
             dfobject = self._import_to_dataframe(file_string)
             if isinstance(dfobject, DataFrame):
                 dfs.append(dfobject)
@@ -130,13 +146,13 @@ class PylieWampApi(ComponentSession):
         # Concatenate dataframes
         if len(dfs) > 1:
             concat_df = concat(
-                dfs, ignore_index=request['ignore_index'],
-                axis=request['axis'], join=request['join'])
+                dfs, ignore_index=request[u'ignore_index'],
+                axis=request[u'axis'], join=request[u'join'])
 
             # Create workdir to save file
-            workdir = os.path.abspath(request['workdir'])
+            workdir = os.path.abspath(request[u'workdir'])
 
-            file_format = request['file_format']
+            file_format = request[u'file_format']
             filepath = os.path.join(workdir, 'joined.{0}'.format(file_format))
             if self._export_dataframe(concat_df, filepath, file_format=file_format):
                 concat_mdframe = filepath
@@ -158,18 +174,18 @@ class PylieWampApi(ComponentSession):
           pydlie/schemas/endpoints/calculate_lie_average_response.v1.json
         """
 
-        mdframe = request['mdframe']
+        mdframe = request[u'mdframe']
 
         # Create workdir to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         # Import CSV file and run spline fitting filter
-        file_string = StringIO(mdframe['content'])
+        file_string = StringIO(self.get_file_content(mdframe))
         liemdframe = LIEMDFrame(read_csv(file_string))
         if 'Unnamed: 0' in liemdframe.columns:
             del liemdframe['Unnamed: 0']
 
-        ave = liemdframe.inliers(method=request['inlierFilterMethod']).get_average()
+        ave = liemdframe.inliers(method=request[u'inlierFilterMethod']).get_average()
         filepath = os.path.join(workdir, 'averaged.csv')
         ave.to_csv(filepath)
 
@@ -189,23 +205,23 @@ class PylieWampApi(ComponentSession):
         """
 
         # Filter DataFrame
-        file_string = StringIO(request['dataframe']['content'])
+        file_string = StringIO(self.get_file_content(request[u'dataframe']))
         dfobject = LIEDataFrame(self._import_to_dataframe(file_string))
-        gaussian = FilterGaussian(dfobject, confidence=request["confidence"])
+        gaussian = FilterGaussian(dfobject, confidence=request[u'confidence'])
         filtered = gaussian.filter()
         self.log.info("Filter detected {0} outliers.".format(len(filtered.outliers.cases)))
 
         # Create workdir to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         # Plot results
-        if request['plot']:
+        if request[u'plot']:
             outp = os.path.join(workdir, 'gauss_filter.pdf')
             p = gaussian.plot()
             p.savefig(outp)
 
         # Save filtered dataframe
-        file_format = request['file_format']
+        file_format = request[u'file_format']
         filepath = os.path.join(workdir, 'gauss_filter.{0}'.format(file_format))
         if not self._export_dataframe(filtered, filepath, file_format=file_format):
             return None
@@ -225,19 +241,19 @@ class PylieWampApi(ComponentSession):
           pydlie/schemas/endpoints/filter_stable_response.v1.json
         """
 
-        mdframe = request['mdframe']
+        mdframe = request[u'mdframe']
 
         # Create workdir to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         # Import CSV file and run spline fitting filter
-        file_string = StringIO(mdframe['content'])
+        file_string = StringIO(self.get_file_content(mdframe))
         liemdframe = LIEMDFrame(read_csv(file_string))
 
         if 'Unnamed: 0' in liemdframe.columns:
             del liemdframe['Unnamed: 0']
 
-        splines = FilterSplines(liemdframe, **request['FilterSplines'])
+        splines = FilterSplines(liemdframe, **request[u'FilterSplines'])
         liemdframe = splines.filter()
 
         output = {}
@@ -250,11 +266,11 @@ class PylieWampApi(ComponentSession):
                 output['stable_pose_{0}'.format(pose)] = stable
 
         # Create plots
-        if request['do_plot']:
+        if request[u'do_plot']:
             if os.path.exists(workdir):
                 currpath = os.getcwd()
                 os.chdir(workdir)
-                paths = splines.plot(tofile=True, filetype=request['plotFileType'])
+                paths = splines.plot(tofile=True, filetype=request[u'plotFileType'])
                 for i, image_paths in enumerate(paths, start=1):
                     fid = '{0}-{1}'.format(os.path.basename(image_paths), i)
                     output[fid] = encoder(image_paths, inline_content=False)
@@ -263,7 +279,7 @@ class PylieWampApi(ComponentSession):
                 self.log.error('Working directory does not exist: {0}'.format(workdir))
 
         # Filter the mdframe
-        if request['do_filter']:
+        if request[u'do_filter']:
             filepath = os.path.join(workdir, 'mdframe_splinefiltered.csv')
             filtered.to_csv(filepath)
 
@@ -289,27 +305,27 @@ class PylieWampApi(ComponentSession):
         """
 
         # Use absolute path to save file
-        workdir = os.path.abspath(request["workdir"])
+        workdir = os.path.abspath(request[u'workdir'])
 
         # Collect trajectories
         mdframe = LIEMDFrame()
-        vdw_header = request['lie_vdw_header']
-        ele_header = request['lie_ele_header']
-        for pose, trj in enumerate(request['bound_trajectory']):
-            mdframe.from_file(
-                trj['content'], {
+        vdw_header = request[u'lie_vdw_header']
+        ele_header = request[u'lie_ele_header']
+        for pose, trj in enumerate(request[u'bound_trajectory']):
+            mdframe.from_file(self.get_file_content(trj), {
                     vdw_header: 'vdw_bound_{0}'.format(pose + 1),
                     ele_header: 'coul_bound_{0}'.format(pose + 1)},
-                filetype=request['filetype'])
+                filetype=request[u'filetype'])
             self.log.debug('Import file: {0}, pose: {1}'.format(trj, pose))
 
         mdframe.from_file(
-            request['unbound_trajectory']['content'], {vdw_header: 'vdw_unbound', ele_header: 'coul_unbound'},
-            filetype=request['filetype'])
-        self.log.debug('Import unbound file: {0}'.format(request['unbound_trajectory']['path']))
+            self.get_file_content(request[u'unbound_trajectory']),
+            {vdw_header: 'vdw_unbound', ele_header: 'coul_unbound'},
+            filetype=request[u'filetype'])
+        self.log.debug('Import unbound file: {0}'.format(request[u'unbound_trajectory'][u'path']))
 
         # Set the case ID
-        mdframe.case = request['case']
+        mdframe.case = request[u'case']
 
         # Store to file
         filepath = os.path.join(workdir, 'mdframe.csv')
@@ -328,21 +344,21 @@ class PylieWampApi(ComponentSession):
         """
 
         # Load the model
-        binary = request['model_pkl']['content']
+        binary = self.get_file_content(request[u'model_pkl'])
         model = dill.loads(binary)
 
         # Parse gromacs residue decomposition energy files to DataFrame
         decomp_dfs = []
-        for dcfileobj in request['decompose_files']:
-            dcfile = StringIO(dcfileobj['content'])
+        for dcfileobj in request[u'decompose_files']:
+            dcfile = StringIO(self.get_file_content(dcfileobj))
             decomp_dfs.append(parse_gromacs_decomp(dcfile))
 
         # Run AD test
         ene = ad_residue_decomp(
-            decomp_dfs, model['AD']['decVdw'], model['AD']['decEle'], cases=request['cases'])
+            decomp_dfs, model['AD']['decVdw'], model['AD']['decEle'], cases=request[u'cases'])
 
         # Use absolute path to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         filepath = os.path.join(workdir, 'adan_residue_decomp.csv')
         ene.to_csv(filepath)
@@ -360,20 +376,19 @@ class PylieWampApi(ComponentSession):
         """
 
         # Load the model
-        binary = request['model_pkl']['content']
+        binary = self.get_file_content(request[u'model_pkl'])
         model = dill.loads(binary)
 
         # Parse gromacs residue decomposition energy files to DataFrame
-        file_string = StringIO(request['dataframe']['content'])
+        file_string = StringIO(self.get_file_content(request[u'dataframe']))
         dfobject = self._import_to_dataframe(file_string)
 
         # Run AD test
-        ene = ad_dene(
-            dfobject, model['AD']['Dene']['CovMatrix'],
-            center=request['center'], ci_cutoff=request['ci_cutoff'])
+        ene = ad_dene(dfobject, model['AD']['Dene']['CovMatrix'],
+            center=request[u'center'], ci_cutoff=request[u'ci_cutoff'])
 
         # Use absolute path to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         filepath = os.path.join(workdir, 'adan_dene.csv')
         ene.to_csv(filepath)
@@ -391,14 +406,14 @@ class PylieWampApi(ComponentSession):
         """
 
         # Parse gromacs residue decomposition energy files to DataFrame
-        file_string = StringIO(request['dataframe']['content'])
+        file_string = StringIO(self.get_file_content(request[u'dataframe']))
         dfobject = self._import_to_dataframe(file_string)
 
         # Run AD test
-        ene = ad_dene_yrange(dfobject, request['ymin'], request['ymax'])
+        ene = ad_dene_yrange(dfobject, request[u'ymin'], request[u'ymax'])
 
         # Use absolute path to save file
-        workdir = os.path.abspath(request['workdir'])
+        workdir = os.path.abspath(request[u'workdir'])
 
         filepath = os.path.join(workdir, 'adan_dene_yrange.csv')
         ene.to_csv(filepath)
