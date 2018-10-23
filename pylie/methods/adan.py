@@ -35,11 +35,9 @@ def parse_gromacs_decomp(ene_file, parse_rest=True):
     """
 
     # Import file
-    line = ene_file.readline()
-    df = pandas.read_csv(ene_file, delim_whitespace=True, header=None)
+    df = pandas.read_csv(ene_file, delim_whitespace=True)
 
     # remove the # symbol from the columns
-    df.columns = line.split()[1:]
     decomp = LIEMDFrame(df)
 
     # Select columns containing residue numbers
@@ -87,7 +85,7 @@ def ad_residue_decomp(decomp_df_list, pca_vdw, pca_ele, cases=None):
     """
 
     # Create DataFrame to hold results
-    if not cases:
+    if cases is None or not len(cases):
         cases = range(1, len(decomp_df_list) + 1)
     assert len(cases) == len(decomp_df_list), AssertionError('Number of cases does not match number of data sets')
 
