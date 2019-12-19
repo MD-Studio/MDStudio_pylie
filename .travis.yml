@@ -6,6 +6,7 @@ os:
 
 python:
   - "2.7"
+  - "3.6"
 
 global:
   env:
@@ -13,12 +14,15 @@ global:
 
 install:
   # install library
-  - pip install numpy scipy
-  - pip install .[test]
+  - pip install codecov
+  - pip install .
 
 script:
-  - (cd tests && coverage run -m unittest discover -vvv)
+  - coverage run tests
 
 branches:
   only:
     - master
+
+after_success:
+  - codecov
