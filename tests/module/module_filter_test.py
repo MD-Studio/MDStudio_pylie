@@ -8,7 +8,7 @@ Test pylie filter functions and workflows
 
 import os
 import glob
-import unittest2
+import unittest
 
 from pandas import read_csv
 
@@ -17,7 +17,7 @@ from pylie.filters.filtersplines import FilterSplines
 from pylie.filters.filtergaussian import  FilterGaussian
 
 
-class TestSplineFilter(unittest2.TestCase):
+class TestSplineFilter(unittest.TestCase):
     tempfiles = []
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
 
@@ -73,7 +73,7 @@ class TestSplineFilter(unittest2.TestCase):
         os.chdir(self.filepath)
 
         # Save filter results as default png file
-        expected = ['{0}-{1}.png'.format(filtered.cases[0], pose) for pose in filtered.poses]
+        expected = ['filter-{0}-{1}.png'.format(filtered.cases[0], pose) for pose in filtered.poses]
         splines.plot(tofile=True)
         available = glob.glob('*.png')
         self.tempfiles.extend([os.path.abspath(p) for p in available])
@@ -81,7 +81,7 @@ class TestSplineFilter(unittest2.TestCase):
         self.assertListEqual(sorted(available), sorted(expected))
 
         # Save filter results as pdf file
-        expected = ['{0}-{1}.pdf'.format(filtered.cases[0], pose) for pose in filtered.poses]
+        expected = ['filter-{0}-{1}.pdf'.format(filtered.cases[0], pose) for pose in filtered.poses]
         axis = splines.plot(tofile=True, filetype='pdf')
         available = [f for f in expected if os.path.isfile(f)]
         self.tempfiles.extend([os.path.abspath(p) for p in available])
@@ -120,7 +120,7 @@ class TestSplineFilter(unittest2.TestCase):
         self.assertAlmostEqual(ave['vdw'][1], -53.78007, places=5)
 
 
-class TestFilterGaussian(unittest2.TestCase):
+class TestFilterGaussian(unittest.TestCase):
     tempfiles = []
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
 

@@ -7,12 +7,12 @@ Test the pylie protein-ligand contact analysis
 """
 
 import os
-import unittest2
+import unittest
 
 from pylie.model.liecontactframe import *
 
 
-class TestLIEContactFrame(unittest2.TestCase):
+class TestLIEContactFrame(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
 
     def run_test(self, case, ligand):

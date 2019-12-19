@@ -7,7 +7,7 @@ Test the pylie file format parsers
 """
 
 import os
-import unittest2
+import unittest
 
 from pylie.methods.fileio import MOL2Parser, PDBParser
 
@@ -32,7 +32,7 @@ DEFAULT_CONTACT_COLUMN_NAMES = {'atnum':'atnum',
                                 'group':'group'}
 
 
-class TestFileIO(unittest2.TestCase):
+class TestFileIO(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
 
     def test_mol2_parser(self):

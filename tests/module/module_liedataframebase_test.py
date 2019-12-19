@@ -8,14 +8,14 @@ DataFrame types in the package
 """
 
 import os
-import unittest2
+import unittest
 
 from pandas import DataFrame, read_csv
 
 from pylie import LIEDataFrame
 
 
-class TestLIEDataFrameBase(unittest2.TestCase):
+class TestLIEDataFrameBase(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
     tempfiles = []
 
@@ -58,7 +58,7 @@ class TestLIEDataFrameBase(unittest2.TestCase):
 
         self.liedata['filter_mask'] = 0
 
-        formats = {'to_csv': 'csv', 'to_excel': 'xlsx', 'to_json': 'json', 'to_html': 'html', 'to_string': 'tbl'}
+        formats = {'to_csv': 'csv', 'to_json': 'json', 'to_html': 'html', 'to_string': 'tbl'}
         for fmt in formats:
             if hasattr(self.liedata, fmt):
                 method = getattr(self.liedata, fmt)

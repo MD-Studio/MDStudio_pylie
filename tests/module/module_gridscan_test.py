@@ -7,14 +7,14 @@ Test the pylie LIEScanDataFrame methods
 """
 
 import os
-import unittest2
+import unittest
 
 from pandas import DataFrame, read_csv
 
 from pylie import LIEScanDataFrame, LIEDataFrame
 
 
-class TestLIEScanDataFrame(unittest2.TestCase):
+class TestLIEScanDataFrame(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
     tempfiles = []
 
@@ -74,8 +74,8 @@ class TestLIEScanDataFrame(unittest2.TestCase):
         optimal = self.abscan.get_optimal()
 
         self.assertIsInstance(optimal, DataFrame)
-        self.assertEqual(list(optimal.index), self.abscan.cases)
-        self.assertEqual(list(optimal.columns), ['alpha', 'beta', 'error'])
+        self.assertEqual(sorted(optimal.index), self.abscan.cases)
+        self.assertEqual(sorted(optimal.columns), ['alpha', 'beta', 'error'])
 
     def test_scanframe_get_cases(self):
         """

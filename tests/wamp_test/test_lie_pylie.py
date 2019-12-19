@@ -31,7 +31,7 @@ def create_path_file_obj(path, encoding='utf8'):
         u'content': str(content), u'extension': extension}
 
 
-def create_workdir(name, path="/tmp/mdstudio/lie_pylie"):
+def create_workdir(name, path="/tmp/mdstudio/mdstudio_pylie"):
     """Create temporal workdir dir"""
     workdir = join(path, name)
     if not os.path.isdir(workdir):
@@ -180,38 +180,38 @@ class Run_pylie(ComponentSession):
     @chainable
     def on_run(self):
         result_collect = yield self.call(
-            "mdgroup.lie_pylie.endpoint.collect_energy_trajectories",
+            "mdgroup.mdstudio_pylie.endpoint.collect_energy_trajectories",
             dict_trajectory)
         assert compare_csv_files(
             result_collect["mdframe"]['content'], dict_stable["mdframe"]['content'])
         print("method collect_energy_trajectories succeeded")
 
         result_stable = yield self.call(
-            "mdgroup.lie_pylie.endpoint.filter_stable_trajectory",
+            "mdgroup.mdstudio_pylie.endpoint.filter_stable_trajectory",
             dict_stable)
         # assert compare_csv_files(
         #     result_stable["filtered_mdframe"]['content'], dict_average["mdframe"]['content'])
         print("method filter_stable_trajectory succeeded!")
 
         result_average = yield self.call(
-            "mdgroup.lie_pylie.endpoint.calculate_lie_average", dict_average)
+            "mdgroup.mdstudio_pylie.endpoint.calculate_lie_average", dict_average)
         assert compare_csv_files(
             result_average["averaged"]['content'], dict_deltag["dataframe"]['content'])
         print("method calculate_lie_average succeeded!")
 
         result_liedeltag = yield self.call(
-            "mdgroup.lie_pylie.endpoint.liedeltag", dict_deltag)
+            "mdgroup.mdstudio_pylie.endpoint.liedeltag", dict_deltag)
         assert compare_csv_files(
             result_liedeltag["liedeltag_file"]['content'], dict_adan_yrange["dataframe"]['content'])
         print("method liedeltag succeeded!")
 
         result_adan_yrange = yield self.call(
-            "mdgroup.lie_pylie.endpoint.adan_dene_yrange", dict_adan_yrange)
+            "mdgroup.mdstudio_pylie.endpoint.adan_dene_yrange", dict_adan_yrange)
         assert compare_dictionaries(result_adan_yrange["decomp"], expected_adan_yrange_results)
         print("method adan_dene_yrange succeeded!")
 
         result_adan_dene = yield self.call(
-            "mdgroup.lie_pylie.endpoint.adan_dene", dict_adan_dene)
+            "mdgroup.mdstudio_pylie.endpoint.adan_dene", dict_adan_dene)
         assert compare_dictionaries(result_adan_dene["decomp"], expected_adan_results)
         print("method adan_dene succeeded!")
 

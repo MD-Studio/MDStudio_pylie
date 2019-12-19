@@ -8,7 +8,7 @@ Test pylie filter functions and workflows
 
 import os
 import glob
-import unittest2
+import unittest
 
 from pandas import DataFrame
 
@@ -17,7 +17,7 @@ from pylie.methods.fileio import read_gromacs_energy_file
 from pylie.filters.filtersplines import FilterSplines
 
 
-class TestMDFrame(unittest2.TestCase):
+class TestMDFrame(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
 
     def setUp(self):
@@ -136,7 +136,7 @@ class TestMDFrame(unittest2.TestCase):
                          {'vdw_bound': (301, 300, 600), 'coul_bound': (301, 300, 600)})
 
 
-class TestGromacsImport(unittest2.TestCase):
+class TestGromacsImport(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
 
     def test_read_gromacs_energy_file(self):

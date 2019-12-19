@@ -7,14 +7,14 @@ Test the pylie LIEModelBuilder methods
 """
 
 import os
-import unittest2
+import unittest
 
-from pandas import DataFrame, read_csv
+from pandas import read_csv
 
 from pylie import LIEDataFrame, LIEModelBuilder
 
 
-class TestLIEModelBuilder(unittest2.TestCase):
+class TestLIEModelBuilder(unittest.TestCase):
     filepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '../files'))
     tempfiles = []
 
@@ -50,9 +50,8 @@ class TestLIEModelBuilder(unittest2.TestCase):
 
         self.assertTrue(self.model.empty)
         self.assertEqual(self.model._class_name, 'modelbuilder')
-        self.assertListEqual(list(self.model.columns),
-                             ['set', 'regressor', 'converge', 'L0', 'L1', 'filter_mask', 'N', 'rmsd', 'fit',
-                              'iteration', 'rsquared'])
+        self.assertEqual(set(self.model.columns), {'set', 'regressor', 'converge', 'L0', 'L1', 'filter_mask', 'N',
+                                                   'rmsd', 'fit', 'iteration', 'rsquared'})
 
     def test_modelbuilder_model(self):
         """

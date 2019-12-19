@@ -6,7 +6,7 @@ file: module_workflow_test.py
 Test pylie workflows
 """
 
-import unittest2
+import unittest
 
 from pandas import DataFrame
 
@@ -16,7 +16,7 @@ from pylie.workflows.filter_workflow import FilterWorkflow
 from pylie.filters.filtersplines import FilterSplines
 
 
-class TestPylieWorkflows(unittest2.TestCase):
+class TestPylieWorkflows(unittest.TestCase):
 
     def test_filter_workflow(self):
 
