@@ -2,7 +2,7 @@
 
 import logging
 
-from .. import pylie_config
+from pylie import pylie_config
 
 logger = logging.getLogger('pylie')
 

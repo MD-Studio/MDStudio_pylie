@@ -4,7 +4,7 @@ import copy
 import logging
 import json
 
-from .methods.fileio import _open_anything
+from pylie.methods.fileio import _open_anything
 
 logger = logging.getLogger('pylie')
 

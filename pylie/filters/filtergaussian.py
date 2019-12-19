@@ -3,9 +3,9 @@
 import logging
 import numpy
 
-from .. import pylie_config
-from ..plotting import plot_filtergaussian_distribution
-from ..methods.methods import multivariate_gaussian
+from pylie import pylie_config
+from pylie.plotting import plot_filtergaussian_distribution
+from pylie.methods.methods import multivariate_gaussian
 
 logger = logging.getLogger('pylie')
 

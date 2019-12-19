@@ -8,11 +8,11 @@ from scipy.spatial.distance import pdist, squareform
 from scipy.cluster.hierarchy import *
 from matplotlib import pyplot
 
-from ..methods.methods import hlinkage_to_treematrix
-from ..plotting import plot_matrix
-from .liedataframe import LIEDataFrame, lie_deltag
-from .lieseries import LIESeries
-from .liebase import LIEDataFrameBase
+from pylie.methods.methods import hlinkage_to_treematrix
+from pylie.plotting import plot_matrix
+from pylie.model.liedataframe import LIEDataFrame, lie_deltag
+from pylie.model.lieseries import LIESeries
+from pylie.model.liebase import LIEDataFrameBase
 
 logger = logging.getLogger('pylie')
 

@@ -7,10 +7,10 @@ import copy
 
 from pandas import pivot_table, DataFrame, Series
 
-from ..methods.fileio import read_lie_etox_file
-from ..methods.data import GREEK_ALPHABET
-from ..model.liebase import LIEDataFrameBase
-from ..model.lieseries import LIESeries
+from pylie.methods.fileio import read_lie_etox_file
+from pylie.methods.data import GREEK_ALPHABET
+from pylie.model.liebase import LIEDataFrameBase
+from pylie.model.lieseries import LIESeries
 
 logger = logging.getLogger('pylie')
 

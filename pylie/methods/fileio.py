@@ -8,7 +8,7 @@ import numpy
 
 from pandas import DataFrame
 
-from .sybyl import AA_SYBYL_TYPES
+from pylie.methods.sybyl import AA_SYBYL_TYPES
 
 if sys.version_info[0] < 3:
     from StringIO import StringIO

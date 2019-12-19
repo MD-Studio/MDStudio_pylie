@@ -7,9 +7,9 @@ import time
 import getpass
 import StringIO
 
-from .. import LIEModelBuilder, pylie_config
-from ..methods.methods import cv_set_partitioner
-from ..model.liemodelframe import RLMregression, OLSregression
+from pylie import LIEModelBuilder, pylie_config
+from pylie.methods.methods import cv_set_partitioner
+from pylie.model.liemodelframe import RLMregression, OLSregression
 
 logger = logging.getLogger('pylie')
 

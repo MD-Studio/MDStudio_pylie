@@ -4,9 +4,9 @@ import logging
 import numpy
 import pandas
 
-from .. import pylie_config
-from .. import LIEModelBuilder, LIEScanDataFrame
-from ..model.liemodelframe import RLM_regression
+from pylie import pylie_config
+from pylie import LIEModelBuilder, LIEScanDataFrame
+from pylie.model.liemodelframe import RLM_regression
 
 logger = logging.getLogger('pylie')
 

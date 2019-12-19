@@ -8,7 +8,7 @@ from matplotlib import pyplot
 from numpy.fft import fft, ifft
 from scipy.interpolate import UnivariateSpline
 
-from .. import pylie_config
+from pylie import pylie_config
 
 logger = logging.getLogger('pylie')
 

@@ -3,7 +3,7 @@
 import numpy
 from pandas import Series
 
-from ..model.liebase import LIESeriesBase
+from pylie.model.liebase import LIESeriesBase
 
 OLD_PANDAS = issubclass(Series, numpy.ndarray)
 

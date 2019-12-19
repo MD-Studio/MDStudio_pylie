@@ -17,7 +17,7 @@ import numpy
 
 from sklearn.covariance import EmpiricalCovariance
 
-from ..model.liemdframe import LIEMDFrame
+from pylie.model.liemdframe import LIEMDFrame
 
 
 def parse_gromacs_decomp(ene_file, parse_rest=True):

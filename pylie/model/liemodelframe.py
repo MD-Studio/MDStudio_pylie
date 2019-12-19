@@ -9,10 +9,10 @@ from pandas import DataFrame, Series, pivot_table, isnull
 from statsmodels import api as sm
 from sklearn import mixture
 
-from ..methods.methods import cv_set_partitioner
-from ..methods.stats import *
-from .liebase import LIEDataFrameBase
-from .liedataframe import LIEDataFrame, lie_deltag
+from pylie.methods.methods import cv_set_partitioner
+from pylie.methods.stats import *
+from pylie.model.liebase import LIEDataFrameBase
+from pylie.model.liedataframe import LIEDataFrame, lie_deltag
 
 logger = logging.getLogger('pylie')
 
