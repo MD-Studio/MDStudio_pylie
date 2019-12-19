@@ -88,7 +88,7 @@ def vector(p1, p2):
     :param p2: coordinates of point p2
     :returns : numpy array with vector coordinates
     """
-    return None if len(p1) != len(p2) else numpy.array([p2[i] - p1[i] for i in xrange(len(p1))])
+    return None if len(p1) != len(p2) else numpy.array([p2[i] - p1[i] for i in range(len(p1))])
 
 
 def projection(pnormal1, ppoint, tpoint):

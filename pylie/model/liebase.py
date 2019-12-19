@@ -353,7 +353,7 @@ class LIEDataFrameBase(_Common, DataFrame):
         """
 
         if self._column_names['case'] in self.columns and self._column_names['poses'] in self.columns:
-            return zip(self['case'].values.astype(int), self['poses'].values)
+            return list(zip(self['case'].values.astype(int), self['poses'].values))
 
     @property
     def trainset(self):

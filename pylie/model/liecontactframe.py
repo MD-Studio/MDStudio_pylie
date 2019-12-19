@@ -1463,12 +1463,12 @@ class LIEContactFrame(LIEDataFrameBase):
 
         # Add structure data to DataFrame.
         # First build intermediate DataFrame and then merge ones. Its faster
-        for col in structure_dict.keys():
+        for col in list(structure_dict.keys()):
             if not len(structure_dict[col]):
                 del structure_dict[col]
 
         df = DataFrame(structure_dict)
-        self[structure_dict.keys()] = df[structure_dict.keys()]
+        self[df.columns] = df
 
         # Determine element types if not defined
         self._get_elements()

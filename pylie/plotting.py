@@ -30,12 +30,13 @@ def plot_matrix(matrix, yaxis=None, xaxis=None, **kwargs):
     ax.set_xlabel(kwargs.get('xlabel', ''), fontsize=10)
 
     # Set the ticks and tick labels. Reverse y axis to align x/y origin
-    yaxis_locs = range(0, len(yaxis), len(yaxis) / 10)
+    yaxis_locs = range(0, len(yaxis), int(len(yaxis) / 10))
     ax.yaxis.set_ticks_position('left')
     ax.yaxis.set_major_locator(mticker.FixedLocator(yaxis_locs))
     ax.yaxis.set_major_formatter(mticker.FixedFormatter(['%1.2f' % yaxis[x] for x in yaxis_locs]))
     ax.invert_yaxis()
-    xaxis_locs = range(0, len(xaxis), len(xaxis) / 10)
+
+    xaxis_locs = range(0, len(xaxis), int(len(xaxis) / 10))
     ax.xaxis.set_ticks_position('bottom')
     ax.xaxis.set_major_locator(mticker.FixedLocator(xaxis_locs))
     ax.xaxis.set_major_formatter(mticker.FixedFormatter(['%1.2f' % xaxis[x] for x in xaxis_locs]))
