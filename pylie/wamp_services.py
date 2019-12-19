@@ -15,6 +15,8 @@ from pylie import (LIEMDFrame, LIEDataFrame, pylie_config)
 from pylie.filters.filtersplines import FilterSplines
 from pylie.filters.filtergaussian import FilterGaussian
 from pylie.methods.adan import (ad_residue_decomp, ad_dene, ad_dene_yrange, parse_gromacs_decomp)
+
+from autobahn.wamp import RegisterOptions
 from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession
 
@@ -22,7 +24,6 @@ if sys.version_info[0] < 3:
     from StringIO import StringIO
 else:
     from io import StringIO
-
 
 PANDAS_IMPORTERS = {'csv': read_csv, 'json': read_json, 'xlsx': read_excel, 'tbl': read_table}
 PANDAS_EXPORTERS = {'csv': 'to_csv', 'json': 'to_json', 'xlsx': 'to_excel', 'tbl': 'to_string'}
@@ -92,7 +93,7 @@ class PylieWampApi(ComponentSession):
             self.log.error("File: {} does not exist!".format(filepath))
             return 'failed'
 
-    @endpoint('liedeltag', 'liedeltag_request', 'liedeltag_response')
+    @endpoint('liedeltag', 'liedeltag_request', 'liedeltag_response', options=RegisterOptions(invoke='roundrobin'))
     def calculate_lie_deltag(self, request, claims):
         """
         For a detailed input description see:
@@ -122,7 +123,8 @@ class PylieWampApi(ComponentSession):
 
         return {'liedeltag_file': encoder(filepath), 'liedeltag': results}
 
-    @endpoint('concat_dataframes', 'concat_dataframes_request', 'concat_dataframes_response')
+    @endpoint('concat_dataframes', 'concat_dataframes_request', 'concat_dataframes_response',
+              options=RegisterOptions(invoke='roundrobin'))
     def concat_dataframes(self, request, claims):
         """
         Combine multiple tabular DataFrames into one new DataFrame using
@@ -161,7 +163,8 @@ class PylieWampApi(ComponentSession):
 
         return {'concat_mdframe': encoder(concat_mdframe)}
 
-    @endpoint('calculate_lie_average', 'calculate_lie_average_request', 'calculate_lie_average_response')
+    @endpoint('calculate_lie_average', 'calculate_lie_average_request', 'calculate_lie_average_response',
+              options=RegisterOptions(invoke='roundrobin'))
     def calculate_lie_average(self, request, claims):
         """
         Calculate LIE electrostatic and Van der Waals energy averages from
@@ -191,7 +194,8 @@ class PylieWampApi(ComponentSession):
 
         return {'averaged': encoder(filepath)}
 
-    @endpoint('gaussian_filter', 'gaussian_filter_request', 'gaussian_filter_response')
+    @endpoint('gaussian_filter', 'gaussian_filter_request', 'gaussian_filter_response',
+              options=RegisterOptions(invoke='roundrobin'))
     def filter_gaussian(self, request, claims):
         """
         Use multivariate Gaussian Distribution analysis to
@@ -228,7 +232,8 @@ class PylieWampApi(ComponentSession):
 
         return {'gauss_filter': encoder(filepath)}
 
-    @endpoint('filter_stable_trajectory', 'filter_stable_trajectory_request', 'filter_stable_trajectory_response')
+    @endpoint('filter_stable_trajectory', 'filter_stable_trajectory_request', 'filter_stable_trajectory_response',
+              options=RegisterOptions(invoke='roundrobin'))
     def filter_stable_trajectory(self, request, claims):
         """
         Use FFT and spline-based filtering to detect and extract stable regions
@@ -287,7 +292,7 @@ class PylieWampApi(ComponentSession):
         return output
 
     @endpoint('collect_energy_trajectories', 'collect_energy_trajectories_request',
-              'collect_energy_trajectories_response')
+              'collect_energy_trajectories_response', options=RegisterOptions(invoke='roundrobin'))
     def import_mdene_files(self, request, claims):
         """
         Import GROMACS MD trajectory energy files into a LIEMDFrame.
@@ -333,7 +338,8 @@ class PylieWampApi(ComponentSession):
 
         return {'mdframe': encoder(filepath)}
 
-    @endpoint('adan_residue_decomp', 'adan_residue_decomp_request', 'adan_residue_decomp_response')
+    @endpoint('adan_residue_decomp', 'adan_residue_decomp_request', 'adan_residue_decomp_response',
+              options=RegisterOptions(invoke='roundrobin'))
     def adan_residue_decomp(self, request, claims):
         """
         For a detailed input description see:
@@ -365,7 +371,7 @@ class PylieWampApi(ComponentSession):
 
         return {'decomp': ene.to_dict()}
 
-    @endpoint('adan_dene', 'adan_dene_request', 'adan_dene_response')
+    @endpoint('adan_dene', 'adan_dene_request', 'adan_dene_response', options=RegisterOptions(invoke='roundrobin'))
     def adan_dene(self, request, claims):
         """
         For a detailed input description see:
@@ -395,7 +401,8 @@ class PylieWampApi(ComponentSession):
 
         return {'decomp': ene.to_dict()}
 
-    @endpoint('adan_dene_yrange', 'adan_dene_yrange_request', 'adan_dene_yrange_response')
+    @endpoint('adan_dene_yrange', 'adan_dene_yrange_request', 'adan_dene_yrange_response',
+              options=RegisterOptions(invoke='roundrobin'))
     def adan_dene_yrange(self, request, claims):
         """
         For a detailed input description see:
