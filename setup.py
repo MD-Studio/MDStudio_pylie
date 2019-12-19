@@ -33,19 +33,17 @@ setup(
     Paul Visscher - Zefiros Software (www.zefiros.eu)
     Felipe Zapata - eScience Center (https://www.esciencecenter.nl/)""",
     author_email=['m4.van.dijk@vu.nl', 'f.zapata@esciencecenter.nl'],
-    url='https://github.com/MD-Studio/MDStudio',
+    url='https://github.com/MD-Studio/MDStudio_pylie',
     license='Apache Software License 2.0',
     keywords='MDStudio LIE statistics modelling',
     platforms=['Any'],
     packages=find_packages(),
+    package_data={distribution_name: ['schemas/*', 'schemas/endpoints/*']},
     py_modules=[distribution_name],
     test_suite="tests",
     install_requires=[
         'dill', 'numpy', 'pandas', 'statsmodels', 'jsonschema', 'matplotlib',
         'scikit-learn', 'openpyxl'],
-    extras_require={
-        'test': ['coverage']
-    },
     include_package_data=True,
     zip_safe=True,
     classifiers=[
