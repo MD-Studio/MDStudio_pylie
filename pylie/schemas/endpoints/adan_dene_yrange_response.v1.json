@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/ada_dene_yrange_response.json",
+  "id": "http://mdstudio/schemas/endpoints/ada_dene_yrange_response.v1.json",
   "title": "Adan dene yrange output",
   "description": "",
   "type": "object",

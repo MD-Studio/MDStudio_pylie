@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/filter_stable_response.json",
+  "id": "http://mdstudio/schemas/endpoints/filter_stable_response.v1.json",
   "title": "Filter stable output",
   "description": "Use FFT and spline-based filtering to detect and extract stable regions",
   "type": "object",

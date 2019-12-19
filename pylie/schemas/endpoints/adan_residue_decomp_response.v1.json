@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/adan_residue_decomp_response.json",
+  "id": "http://mdstudio/schemas/endpoints/adan_residue_decomp_response.v1.json",
   "title": "Adan residues output",
   "description": "Adan residues decomposition",
   "type": "object",

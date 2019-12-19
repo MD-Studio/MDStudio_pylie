@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/adan_dene_yrange_request.json",
+  "id": "http://mdstudio/schemas/endpoints/adan_dene_yrange_request.v1.json",
   "title": "Adan dene yrange input",
   "description": "eTOX ALLIES deltaG range applicability domain test",
   "type": "object",

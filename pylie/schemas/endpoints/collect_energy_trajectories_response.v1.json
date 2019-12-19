@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://liestudio/schemas/collect_energy_trajectories_response.json",
+  "id": "http://mdstudio/schemas/endpoints/collect_energy_trajectories_response.v1.json",
   "title": "Calculated lie average output",
   "description": "Import GROMACS MD trajectory energy files into a LIEMDFrame",
   "type": "object",

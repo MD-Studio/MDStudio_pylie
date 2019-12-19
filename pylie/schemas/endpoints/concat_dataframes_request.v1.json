@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://liestudio/schemas/concat_input.json",
+  "id": "http://mdstudio/schemas/endpoints/concat_input.v1.json",
   "title": "Concat dataframes input",
   "description": "Concatenate dataframes",
   "type": "object",

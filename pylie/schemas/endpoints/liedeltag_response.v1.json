@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://liestudio/schemas/delta_tag_output.json",
+  "id": "http://mdstudio/schemas/endpoints/delta_tag_output.v1.json",
   "title": "Deltatag output",
   "description": "Deltatag",
   "type": "object",

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/adan_dene_request.json",
+  "id": "http://mdstudio/schemas/endpoints/adan_dene_request.v1.json",
   "title": "Adan dene input",
   "description": "eTOX ALLIES deltaG VdW/Elec energy applicability domain analysis",
   "type": "object",
