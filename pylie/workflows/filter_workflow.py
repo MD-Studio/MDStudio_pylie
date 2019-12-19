@@ -5,12 +5,17 @@ import pandas
 import os
 import time
 import getpass
-import StringIO
+import sys
 
-from .. import pylie_config
-from ..model.scandataframe import LIEScanDataFrame
-from ..filters.filtersplines import FilterSplines
-from ..filters.filtergaussian import FilterGaussian
+if sys.version_info[0] < 3:
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
+from pylie import pylie_config
+from pylie.model.scandataframe import LIEScanDataFrame
+from pylie.filters.filtersplines import FilterSplines
+from pylie.filters.filtergaussian import FilterGaussian
 
 logger = logging.getLogger('pylie')
 
@@ -38,8 +43,8 @@ class FilterWorkflow(object):
             self._orig_data = [self._orig_data]
 
         # Prepare the report
-        self._report = StringIO.StringIO()
-        self._report_config = StringIO.StringIO()
+        self._report = StringIO()
+        self._report_config = StringIO()
         self._print_header()
 
         # For each object: choose filter based on mdframe or dataframe types
@@ -80,8 +85,7 @@ class FilterWorkflow(object):
     def _print_header(self):
         self._report.write('=' * 100 + '\n')
         self._report.write("LIE dataset filter workflow\n- Date: {0}\n- folder: {1}\n- User: {2}\n".format(time.ctime(),
-                                                                                                           os.getcwd(),
-                                                                                                           getpass.getuser()))
+                                                                                        os.getcwd(), getpass.getuser()))
         self._report.write('=' * 100 + '\n')
 
     def _filterLIEDataFrame(self, lieobject):
